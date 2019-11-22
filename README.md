@@ -71,4 +71,6 @@ Endpoints can be found in `src/routes/index.ts`
 
 `/api/info` responses with a list of groups, patients and providers, along with information set for the webhook endpoint
 
+> Note that logs are generated when each endpoint is called.  These logs are accessible from the STDOUT output of npm run start
+
 ## Testing the iFrame
