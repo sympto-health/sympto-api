@@ -2,7 +2,7 @@ import ngrok from 'ngrok';
 import logger from './logger';
 
 const ngrokSingleton = {
-  url: null,
+  url: '',
 };
 
 export const startServer = async () => {

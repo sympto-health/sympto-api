@@ -2,11 +2,12 @@ import { Request, Response, Router } from 'express';
 import { BAD_REQUEST, OK } from 'http-status-codes';
 import axios from 'axios';
 import faker from 'faker';
+import base64 from 'base-64';
 import { clientId, clientSecret, clientURL, clientFrontendURL } from '../config';
 import { fetchApiUrl } from '../ngrok';
 import logger from '../logger';
 import phoneNumbers from '../phoneNumbers';
-import { createAuthKey } from '../jwt';
+import { createAuthKey, verifyAuthKey } from '../jwt';
 
 // Init router and path
 const router = Router();
@@ -15,11 +16,32 @@ logger.info({ clientId, clientSecret, clientURL, clientFrontendURL } );
 
 const ENDPOINT_QUERY_PARAM = 'EndpointQueryParam';
 
+// Used to validate webhook (which is called from Sympto)
+const TEST_APP_CLIENT_ID = 'SampleAppClientId';
+const TEST_APP_CLIENT_SECRET = 'SampleAppClientSecret';
+
 /**
  * Webhook used as clinic endpoint
  */
 router.post('/webhook', async (req: Request, res: Response) => {
   logger.info('Request from Sympto Health');
+  const { authenticationCode } = req.body;
+  const { authorization } = req.headers;
+  if (authorization == null || authenticationCode == null) {
+    throw new Error('Invalid authorization header or auth code');
+  }
+
+  // Use http basic auth to verify client id and secret
+  const basicAuthHeader = base64.decode(authorization.split(' ')[1]);
+  const [clientId, clientSecret] = basicAuthHeader.split(':');
+  if (clientId !== TEST_APP_CLIENT_ID || clientSecret !== TEST_APP_CLIENT_SECRET) {
+    throw new Error('Invalid client id or secret');
+  }
+
+  const payload = await verifyAuthKey(authenticationCode);
+  res.send({
+    email: payload.email,
+  });
 });
 
 /**
@@ -38,8 +60,8 @@ router.get('/setup', async (req: Request, res: Response) => {
   // Set clinic admin endpoint
   const { data } = await axios.post(`${clientURL}/clinicAdmin/clinics/endpoint`, {
     endpointURL: `${fetchApiUrl()}/api/webhook`,
-    clientSecret: 'SampleAppClientSecret',
-    clientId: 'SampleAppClientId',
+    clientSecret: TEST_APP_CLIENT_SECRET,
+    clientId: TEST_APP_CLIENT_ID,
     endpointQueryParam: ENDPOINT_QUERY_PARAM,
   }, { headers: {'Authorization': 'Bearer '+authCode} });
   logger.info(`Received response ${JSON.stringify(data)} from setting clinic endpoint`);
