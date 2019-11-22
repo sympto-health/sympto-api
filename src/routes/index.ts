@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import { BAD_REQUEST, OK } from 'http-status-codes';
 import axios from 'axios';
 import { clientId, clientSecret, clientURL } from '../config';
-
+import { apiUrl } from '../ngrok';
 import logger from '../logger';
 
 // Init router and path
@@ -29,7 +29,19 @@ router.get('/setup', async (req: Request, res: Response) => {
     clientSecret,
   });
   logger.info(`Auth code is ${authCode}`);
-  throw new Error('wow');
+  console.log('Bearer '+authCode);
+  // Set clinic admin endpoint
+  const { data } = await axios.post(`${clientURL}/clinicAdmin/clinics/endpoint`, {
+    endpointURL: `${apiUrl}/api/webhook`,
+    clientSecret: 'SampleAppClientSecret',
+    clientId: 'SampleAppClientId',
+    endpointQueryParam: 'SampleApp',
+  }, { headers: {'Authorization': 'Bearer '+authCode} });
+  logger.info(`Received response ${JSON.stringify(data)} from setting clinic endpoint`);
+
+  res.send({
+    response: 'success',
+  });
 });
 
 router.get('/users', async (req: Request, res: Response) => {
