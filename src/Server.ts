@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/api', BaseRouter);
+app.use('/', BaseRouter);
 app.use((err: Error, req: Request, res: Response, next: Function) => {
   console.error(err.stack)
   res.status(BAD_REQUEST).send(err.message)

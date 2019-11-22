@@ -137,6 +137,10 @@ router.get('/create', async (req: Request, res: Response) => {
       firstName: 'Doctor',
       lastName: 'One',
       email: 'doc1@mailinator.com',
+      options: {
+        disableIntroEmail: false,
+        forceResetPassword: false,
+      },
       notificationPreferences: ['email'],
       role: 'doctor',
       timeZone: 'America/Los_Angeles'
@@ -151,6 +155,10 @@ router.get('/create', async (req: Request, res: Response) => {
       firstName: 'Doctor',
       lastName: 'Two',
       email: 'doc2@mailinator.com',
+      options: {
+        disableIntroEmail: false,
+        forceResetPassword: false,
+      },
       notificationPreferences: ['email'],
       role: 'doctor',
       timeZone: 'America/Los_Angeles'
