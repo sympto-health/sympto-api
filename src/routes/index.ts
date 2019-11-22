@@ -62,7 +62,7 @@ router.get('/setup', async (req: Request, res: Response) => {
   console.log('Bearer '+authCode);
   // Set clinic admin endpoint
   const { data } = await axios.post(`${clientURL}/clinicAdmin/clinics/endpoint`, {
-    endpointURL: `${fetchApiUrl()}/api/webhook`,
+    endpointURL: `${fetchApiUrl()}/webhook`,
     clientSecret: TEST_APP_CLIENT_SECRET,
     clientId: TEST_APP_CLIENT_ID,
     endpointQueryParam: ENDPOINT_QUERY_PARAM,
