@@ -50,14 +50,9 @@ Since this application is designed to test connectivity with Sympto Health, ngro
 To verify your configuration, on application start, you should see the following:
 
 ```
-{
-	clientId: <CLIENT ID>,
-	clientSecret: <CLIENT SECRET>,
-	clientURL: <CLIENT URL>,
-	clientFrontendURL: <CLIENT_FRONTEN_URL>
-}
+{"message":{"clientId": <CLIENT_ID>,"clientSecret":<CLIENT_SECRET>,"clientURL":<CLIENT_URL>,"clientFrontendURL": <CLIENT_FRONTEND_URL>}
 
-{"message":"Started server on url https://0f352c83.ngrok.io","level":"info"}
+{"message":"Started server on url https://dd8aa578.ngrok.io","level":"info"}
 
 {"message":"Express server started on port: 3000","level":"info"}
 ```

@@ -38,7 +38,10 @@ router.post('/webhook', async (req: Request, res: Response) => {
     throw new Error('Invalid client id or secret');
   }
 
-  const payload = await verifyAuthKey(authenticationCode);
+  // @ts-ignore
+  const payload: {
+    email: string
+  } = await verifyAuthKey(authenticationCode);
   res.send({
     email: payload.email,
   });
