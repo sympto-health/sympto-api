@@ -274,6 +274,9 @@ router.get('/url', async (req: Request, res: Response) => {
   });
 });
 
+router.get('/', async (req: Request, res: Response) => {
+  res.send('Server started. Continue to next steps in documentation');
+});
 
 // Export the base-router
 export default router;
