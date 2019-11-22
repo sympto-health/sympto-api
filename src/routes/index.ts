@@ -169,6 +169,26 @@ router.get('/create', async (req: Request, res: Response) => {
   logger.info(`Received provider ids ${JSON.stringify(providerIds)}`)
 
   logger.info('Group management');
+
+  logger.info('Adding patients three and four into group 2');
+  await axios.post(
+    `${clientURL}/clinicAdmin/groups/manage`,
+    {
+      groupIds: [groupId2],
+      userId: patientIds[2],
+    },
+    { headers: {'Authorization': 'Bearer '+authCode} },
+  );
+  await axios.post(
+    `${clientURL}/clinicAdmin/groups/manage`,
+    {
+      groupIds: [groupId2],
+      userId: patientIds[3],
+    },
+    { headers: {'Authorization': 'Bearer '+authCode} },
+  );
+
+
   logger.info('Adding patients one and two into group 1');
   await axios.post(
     `${clientURL}/clinicAdmin/groups/manage`,
@@ -188,24 +208,6 @@ router.get('/create', async (req: Request, res: Response) => {
     { headers: {'Authorization': 'Bearer '+authCode} },
   );
 
-  logger.info('Adding patients three and four into group 2');
-  await axios.post(
-    `${clientURL}/clinicAdmin/groups/manage`,
-    {
-      groupIds: [groupId2],
-      userId: patientIds[0],
-    },
-    { headers: {'Authorization': 'Bearer '+authCode} },
-  );
-
-  await axios.post(
-    `${clientURL}/clinicAdmin/groups/manage`,
-    {
-      groupIds: [groupId2],
-      userId: patientIds[1],
-    },
-    { headers: {'Authorization': 'Bearer '+authCode} },
-  );
 
   logger.info('Adding provider one into group one');
   await axios.post(
