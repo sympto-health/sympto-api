@@ -197,5 +197,34 @@ router.get('/create', async (req: Request, res: Response) => {
 });
 
 
+/**
+ * Lists users and endpoint information
+ */
+router.get('/info', async (req: Request, res: Response) => {
+  logger.info('Fetching auth code');
+
+  // Generates auth code
+  const { data: { Response: authCode } } = await axios.post(`${clientURL}/authorization`, {
+    clientId,
+    clientSecret,
+  });
+  logger.info(`Auth code is ${authCode}`);
+
+  logger.info('Fetching provider info');
+  const { data: { Response } } = await axios({
+    url: `${clientURL}/clinicAdmin/users`,
+    method: 'get',
+    headers: {'Authorization': 'Bearer '+authCode},
+  });
+
+  res.send({
+    response: {
+      users: Response,
+    },
+  });
+
+});
+
+
 // Export the base-router
 export default router;
