@@ -3,7 +3,7 @@ import { BAD_REQUEST, OK } from 'http-status-codes';
 import axios from 'axios';
 import faker from 'faker';
 import { clientId, clientSecret, clientURL, clientFrontendURL } from '../config';
-import { apiUrl } from '../ngrok';
+import { fetchApiUrl } from '../ngrok';
 import logger from '../logger';
 import phoneNumbers from '../phoneNumbers';
 import { createAuthKey } from '../jwt';
@@ -13,7 +13,7 @@ const router = Router();
 
 logger.info({ clientId, clientSecret, clientURL, clientFrontendURL } );
 
-const ENDPOINT_QUERY_PARAM = 'endpointQueryParam';
+const ENDPOINT_QUERY_PARAM = 'EndpointQueryParam';
 
 /**
  * Webhook used as clinic endpoint
@@ -37,7 +37,7 @@ router.get('/setup', async (req: Request, res: Response) => {
   console.log('Bearer '+authCode);
   // Set clinic admin endpoint
   const { data } = await axios.post(`${clientURL}/clinicAdmin/clinics/endpoint`, {
-    endpointURL: `${apiUrl}/api/webhook`,
+    endpointURL: `${fetchApiUrl()}/api/webhook`,
     clientSecret: 'SampleAppClientSecret',
     clientId: 'SampleAppClientId',
     endpointQueryParam: ENDPOINT_QUERY_PARAM,
@@ -45,7 +45,7 @@ router.get('/setup', async (req: Request, res: Response) => {
   logger.info(`Received response ${JSON.stringify(data)} from setting clinic endpoint`);
 
   res.send({
-    response: 'success',
+    response: `success. endpoint set to ${fetchApiUrl()}`,
   });
 });
 
@@ -220,9 +220,18 @@ router.get('/info', async (req: Request, res: Response) => {
     headers: {'Authorization': 'Bearer '+authCode},
   });
 
+  logger.info('Fetching information about endpoint');
+  const { data: { Response: endpointData } } = await axios({
+    url: `${clientURL}/clinicAdmin/clinics/endpoint`,
+    method: 'get',
+    headers: {'Authorization': 'Bearer '+authCode},
+  });
+
+
   res.send({
     response: {
       users: Response,
+      endpoint: endpointData,
     },
   });
 });
@@ -236,7 +245,7 @@ router.get('/url', async (req: Request, res: Response) => {
   logger.info('Creating auth key');
   const authKey = await createAuthKey(email);
   res.send({
-    url: `${clientFrontendURL}/authKey?authCode${ENDPOINT_QUERY_PARAM}=${authKey}`,
+    url: `${clientFrontendURL}?authCode${ENDPOINT_QUERY_PARAM}=${authKey}`,
   });
 });
 

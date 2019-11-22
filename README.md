@@ -96,8 +96,10 @@ When you navigate to the generated Sympto URL, Sympto will attempt to authentica
 > Note that if a user with the specified email does not exist on the Sympto platform, the generated URL will not work. Make sure that you call the /create endpoint before testing out the iFrame
 
 Try generating a Sympto url with the following emails:
-`/api/url?email=doc1@mailinator.com`
-`/api/url?email=doc2@mailinator.com`
+
+ - `/api/url?email=doc1@mailinator.com`
+ - `/api/url?email=doc2@mailinator.com`
+
 Note that both these email addresses are hard coded in the `/create` endpoint
 
 Once a user is successfully authorized, a 15 minute user session is generated, allowing the user to freely navigate the Sympto platform.

@@ -1,12 +1,16 @@
 import ngrok from 'ngrok';
 import logger from './logger';
 
+const ngrokSingleton = {
+  url: null,
+};
+
 export const startServer = async () => {
-  const url = await ngrok.connect(3000);
-  logger.info(`Started server on url ${url}`);
+  ngrokSingleton.url = await ngrok.connect(3000);
+  logger.info(`Started server on url ${ngrokSingleton.url}`);
 }
 
-export const apiUrl = ngrok.getUrl();
+export const fetchApiUrl = () => (ngrokSingleton.url);
 
 export const stopServer = async () => {
   await ngrok.kill();
