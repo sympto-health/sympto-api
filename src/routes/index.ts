@@ -6,7 +6,7 @@ import { clientId, clientSecret, clientURL, clientFrontendURL } from '../config'
 import { apiUrl } from '../ngrok';
 import logger from '../logger';
 import phoneNumbers from '../phoneNumbers';
-import jwt from '../jwt';
+import { createAuthKey } from '../jwt';
 
 // Init router and path
 const router = Router();

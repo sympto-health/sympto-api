@@ -12,12 +12,10 @@ export const createAuthKey = async (email: string) => (
       exp: Math.floor(Date.now() / 1000) + (60 * 10), // 10 minute expiry
     },
     ENCRYPTION_SECRET,
-    { algorithm: 'RS256' },
   ));
 
 export const verifyAuthKey = async (token: string) => (
   jwt.verifyAsync(
     token,
     ENCRYPTION_SECRET,
-    { algorithm: 'RS256' },
   ));
