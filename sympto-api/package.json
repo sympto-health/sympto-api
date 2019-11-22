@@ -4,8 +4,7 @@
   "scripts": {
     "build": "node ./util/build.js",
     "lint": "tslint --project \"tsconfig.json\"",
-    "start": "node -r module-alias/register ./dist/start.js",
-    "start-dev": "nodemon --config \"./util/nodemon.json\""
+    "start": "cross-env ENV_FILE=production node -r module-alias/register  ./dist/start.js"
   },
   "dependencies": {
     "axios": "^0.19.0",
@@ -16,7 +15,6 @@
     "http-status-codes": "^1.4.0",
     "module-alias": "^2.2.2",
     "morgan": "^1.9.1",
-    "ngrok": "^3.2.5",
     "winston": "^3.2.1"
   },
   "devDependencies": {
@@ -29,7 +27,6 @@
     "find": "^0.3.0",
     "fs-extra": "^8.1.0",
     "jsonfile": "^5.0.0",
-    "nodemon": "^2.0.0",
     "ts-node": "^8.5.2",
     "tsconfig-paths": "^3.9.0",
     "tslint": "^5.20.1",
