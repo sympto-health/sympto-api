@@ -15,13 +15,14 @@ To get started, after checking out this repository, run create a new `.env` file
 CLIENT_ID=<XXX>
 CLIENT_SECRET=<XXX>
 CLIENT_URL=<XXX>
+CLIENT_FRONTEND_URL=<XXX>
 ```
 
 
 
 > Note that the Client URL must be in the format http://<DEV_BOX_URL>
 >    (No trailing slash, and include http)
-
+>  The client frontend URL will usually be the Client URL without the specified port number, unless otherwise noted.
 
 
 ## Starting the Application
@@ -49,9 +50,12 @@ Since this application is designed to test connectivity with Sympto Health, ngro
 To verify your configuration, on application start, you should see the following:
 
 ```
-{ clientId: <CLIENT ID>,
-clientSecret: <CLIENT SECRET>,
-clientURL: <CLIENT URL> }
+{
+	clientId: <CLIENT ID>,
+	clientSecret: <CLIENT SECRET>,
+	clientURL: <CLIENT URL>,
+	clientFrontendURL: <CLIENT_FRONTEN_URL>
+}
 
 {"message":"Started server on url https://0f352c83.ngrok.io","level":"info"}
 
@@ -74,3 +78,26 @@ Endpoints can be found in `src/routes/index.ts`
 > Note that logs are generated when each endpoint is called.  These logs are accessible from the STDOUT output of npm run start
 
 ## Testing the iFrame
+
+### 1. Auth Token generation
+Auth tokens are generated using JSON web tokens with 10 minute expiries. The JWT implementation can be found here: `src/jwt.ts`
+
+The JWT is encoded with a user email, and when decoded, a user email is decoded.
+
+### 2. Sympto URL generation
+The Sympto URL with the auth code can be generated from the `/api/url`  endpoint.
+This endpoint takes in an email address
+(ie `/api/url?email=bob@gmail.com`)
+and generates an auth token specific to that email address. The endpoint returns a URL to Sympto along with the auth code.
+
+### 3.  Authentication
+When you navigate to the generated Sympto URL, Sympto will attempt to authenticate the auth token using the  **POST** `/webhook` endpoint. The `/webhook` endpoint returns an email address, in the format `{ email: <email> }`, and if a user with the given email has an account on Sympto, the user will be logged in.
+
+> Note that if a user with the specified email does not exist on the Sympto platform, the generated URL will not work. Make sure that you call the /create endpoint before testing out the iFrame
+
+Try generating a Sympto url with the following emails:
+`/api/url?email=doc1@mailinator.com`
+`/api/url?email=doc2@mailinator.com`
+Note that both these email addresses are hard coded in the `/create` endpoint
+
+Once a user is successfully authorized, a 15 minute user session is generated, allowing the user to freely navigate the Sympto platform.

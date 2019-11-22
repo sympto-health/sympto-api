@@ -2,15 +2,18 @@ import { Request, Response, Router } from 'express';
 import { BAD_REQUEST, OK } from 'http-status-codes';
 import axios from 'axios';
 import faker from 'faker';
-import { clientId, clientSecret, clientURL } from '../config';
+import { clientId, clientSecret, clientURL, clientFrontendURL } from '../config';
 import { apiUrl } from '../ngrok';
 import logger from '../logger';
 import phoneNumbers from '../phoneNumbers';
+import jwt from '../jwt';
 
 // Init router and path
 const router = Router();
 
-console.log({ clientId, clientSecret, clientURL } );
+logger.info({ clientId, clientSecret, clientURL, clientFrontendURL } );
+
+const ENDPOINT_QUERY_PARAM = 'endpointQueryParam';
 
 /**
  * Webhook used as clinic endpoint
@@ -37,7 +40,7 @@ router.get('/setup', async (req: Request, res: Response) => {
     endpointURL: `${apiUrl}/api/webhook`,
     clientSecret: 'SampleAppClientSecret',
     clientId: 'SampleAppClientId',
-    endpointQueryParam: 'SampleApp',
+    endpointQueryParam: ENDPOINT_QUERY_PARAM,
   }, { headers: {'Authorization': 'Bearer '+authCode} });
   logger.info(`Received response ${JSON.stringify(data)} from setting clinic endpoint`);
 
@@ -222,7 +225,19 @@ router.get('/info', async (req: Request, res: Response) => {
       users: Response,
     },
   });
+});
 
+router.get('/url', async (req: Request, res: Response) => {
+  const { email } = req.query;
+  if (email == null) {
+    throw new Error('Email required to generate auth key');
+  }
+
+  logger.info('Creating auth key');
+  const authKey = await createAuthKey(email);
+  res.send({
+    url: `${clientFrontendURL}/authKey?authCode${ENDPOINT_QUERY_PARAM}=${authKey}`,
+  });
 });
 
 
