@@ -52,3 +52,18 @@ As a recap, this endpoint takes 4 parameters
 | clientId | string | id passed from Sympto to your app (as part of the basic auth header), allowing you to verify Sympto is calling your webhook endpoint | 
 | clientSecret | string | secret passed from Sympto to your app (as part of the basic auth header), allowing you to verify Sympto is calling your webhook endpoint | 
 | endpointQueryParam | string (A-Z latin alphabets only, case-sensitive) | unique keyword used by Sympto that represents your application. For example, if your application is Example App, your keyword might be example.
+
+Here is sample code of this endpoint's real world usage within our example app: [https://github.com/sympto-health/sympto-api/blob/master/src/routes/index.ts#L65-L71](https://github.com/sympto-health/sympto-api/blob/master/src/routes/index.ts#L65-L71)
+
+
+### **4. Test your integration**
+Once you generate an auth code (see step 1), pass in the authentication code to sympto:
+
+Given an `endpointQueryParam` (see step 3) of `FoxApp`, and an authentication code of `sampleAuthCode`, navigate to Sympto:
+http://sandbox.symptohealth.com?authCodeFoxApp?=sampleAuthCode
+
+On navigation, Sympto will make a POST request to your app's webhook endpoint (set up in step 3). If your endpoint returns the email of a valid Sympto user, the given user will be automatically logged in to Sympto.
+
+
+### All Done!!!
+![enter image description here](https://media1.giphy.com/media/l3q2zVr6cu95nF6O4/source.gif)
