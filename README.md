@@ -111,3 +111,7 @@ Try generating a Sympto url with the following emails:
 Note that both these email addresses are hard coded in the `/create` endpoint
 
 Once a user is successfully authorized, a 15 minute user session is generated, allowing the user to freely navigate the Sympto platform.
+
+
+### More documetation
+[SSO / Webhook Integration](https://github.com/sympto-health/sympto-api/blob/master/Webhook.md)
