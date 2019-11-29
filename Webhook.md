@@ -1,9 +1,10 @@
+
 ## You've successfully integrated with the Sympto API, now what?
 
 > Before this step, it is expected that you have been able to integrate with the Sympto API. This means that you have successfully created user accounts and groups on Sympto. 
 > **If you have not yet reached this stage, please first try integrating the basic authentication and account creation API** 
 
-**1. Set up a mechanism generate user-specific auth tokens within your codebase**
+### **1. Set up a mechanism generate user-specific auth tokens within your codebase**
 
 For example, JSON web tokens are a popular mechanism for generating auth tokens. 
 
@@ -15,7 +16,7 @@ For this example:
 
 > We strongly recommend that all generated auth tokens automatically expire, and that, as a system administrator, you have the ability to invalidate any given auth token. 
  
- **2. Set up a webhook endpoint**
+ ### **2. Set up a webhook endpoint**
  
  In our codebase, set up an endpoint for Sympto to call to help authenticate a given user.
 
@@ -37,5 +38,17 @@ Make sure that your endpoint fits the following constraints:
  - Returns a response in the format `{email: <email>}` with a status code of 200
 
 
- **3. Configure Sympto to use your webhook endpoint**
- 
+### **3. Configure Sympto to use your webhook endpoint**
+
+We provide a configuration endpoint 
+ `POST /clinicAdmin/clinics/endpoint` 
+ to allow you to customize and configure how Sympto talks to your application.
+
+As a recap, this endpoint takes 4 parameters
+
+|Param  | Type| Description |
+|--|--|--|
+| endpointURL | string | webhook URL - *for example, if our app lives on api.example.com, and we created a post endpoint at the route /sympto/webhook, this url would be https://example.com/sympto/webhook*
+| clientId | string | id passed from Sympto to your app (as part of the basic auth header), allowing you to verify Sympto is calling your webhook endpoint | 
+| clientSecret | string | secret passed from Sympto to your app (as part of the basic auth header), allowing you to verify Sympto is calling your webhook endpoint | 
+| endpointQueryParam | string (A-Z latin alphabets only, case-sensitive) | unique keyword used by Sympto that represents your application. For example, if your application is Example App, your keyword might be example.
