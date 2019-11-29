@@ -18,7 +18,7 @@ For this example:
  
  ### **2. Set up a webhook endpoint**
  
- In our codebase, set up an endpoint for Sympto to call to help authenticate a given user.
+ In your codebase, set up an endpoint for Sympto to call to help authenticate a given user.
 
 Sympto will directly call your endpoint on page load, passing in an auth token (generated from step 1) along with a clientId and clientSecret.
 
