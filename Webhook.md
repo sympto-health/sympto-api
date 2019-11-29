@@ -60,7 +60,7 @@ Here is sample code of this endpoint's real world usage within our example app: 
 Once you generate an auth code (see step 1), pass in the authentication code to sympto:
 
 Given an `endpointQueryParam` (see step 3) of `FoxApp`, and an authentication code of `sampleAuthCode`, navigate to Sympto:
-http://sandbox.symptohealth.com?authCodeFoxApp?=sampleAuthCode
+http://sandbox.symptohealth.com?authCodeFoxApp=sampleAuthCode
 
 On navigation, Sympto will make a POST request to your app's webhook endpoint (set up in step 3). If your endpoint returns the email of a valid Sympto user, the given user will be automatically logged in to Sympto.
 
