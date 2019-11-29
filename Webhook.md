@@ -49,8 +49,8 @@ As a recap, this endpoint takes 4 parameters
 |Param  | Type| Description |
 |--|--|--|
 | endpointURL | string | webhook URL - *for example, if our app lives on api.example.com, and we created a post endpoint at the route /sympto/webhook, this url would be https://example.com/sympto/webhook*
-| clientId | string | id passed from Sympto to your app (as part of the basic auth header), allowing you to verify Sympto is calling your webhook endpoint | 
-| clientSecret | string | secret passed from Sympto to your app (as part of the basic auth header), allowing you to verify Sympto is calling your webhook endpoint | 
+| clientId | string | id passed from Sympto to your app (as part of the basic auth header), allowing you to verify Sympto is calling your webhook endpoint **Note that this is NOT your Sympto client id, this is a client id that is generated from your application** | 
+| clientSecret | string | secret passed from Sympto to your app (as part of the basic auth header), allowing you to verify Sympto is calling your webhook endpoint **Note that this is NOT your Sympto client id, this is a client secret that is generated from your application** | 
 | endpointQueryParam | string (A-Z latin alphabets only, case-sensitive) | unique keyword used by Sympto that represents your application. For example, if your application is Example App, your keyword might be example.
 
 Here is sample code of this endpoint's real world usage within our example app: [https://github.com/sympto-health/sympto-api/blob/master/src/routes/index.ts#L65-L71](https://github.com/sympto-health/sympto-api/blob/master/src/routes/index.ts#L65-L71)
