@@ -66,4 +66,4 @@ On navigation, Sympto will make a POST request to your app's webhook endpoint (s
 
 
 ### All Done!!!
-![enter image description here](https://media1.giphy.com/media/l3q2zVr6cu95nF6O4/source.gif)
+<img src="https://media1.giphy.com/media/l3q2zVr6cu95nF6O4/source.gif" alt="party" width="200"/>
