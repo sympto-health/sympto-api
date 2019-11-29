@@ -27,6 +27,7 @@ router.post('/webhook', async (req: Request, res: Response) => {
   logger.info('Request from Sympto Health');
   const { authenticationCode } = req.body;
   const { authorization } = req.headers;
+  logger.info({ authenticationCode, authorization });
   if (authorization == null || authenticationCode == null) {
     throw new Error('Invalid authorization header or auth code');
   }
