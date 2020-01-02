@@ -122,7 +122,12 @@ router.get('/create', async (req: Request, res: Response) => {
           lastName: lastName,
           email: `${firstName}.${lastName}@mailinator.com`,
           phoneNumber: phoneNumbers[i],
-          timeZone: 'America/Los_Angeles'
+          timeZone: 'America/Los_Angeles',
+          notificationType: ['email'],
+          options: {
+            disableIntroEmail: true,
+            forceResetPassword: false,
+          },
         },
         { headers: {'Authorization': 'Bearer '+authCode} },
       );
