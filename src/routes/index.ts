@@ -49,6 +49,15 @@ router.post('/webhook', async (req: Request, res: Response) => {
 });
 
 /**
+ * Patient Webhook used as clinic endpoint
+ */
+router.post('/patient/webhook', async (req: Request, res: Response) => {
+  logger.info('Request from Sympto Health for new patient');
+  logger.info(req.body);
+  res.send(true);
+});
+
+/**
  * Generate auth code and create a set of users and groups
  */
 router.get('/setup', async (req: Request, res: Response) => {
@@ -69,6 +78,16 @@ router.get('/setup', async (req: Request, res: Response) => {
     endpointQueryParam: ENDPOINT_QUERY_PARAM,
   }, { headers: {'Authorization': 'Bearer '+authCode} });
   logger.info(`Received response ${JSON.stringify(data)} from setting clinic endpoint`);
+
+  // Set patient webhook endpoint
+  const { data: patientWebhook } = await axios.post(`${clientURL}/clinicAdmin/webhook`, {
+    webhookData: {
+      url: `${fetchApiUrl()}/patient/webhook`,
+      secret: 'TEST',
+    },
+  }, { headers: {'Authorization': 'Bearer '+authCode} });
+  logger.info(`Received response ${JSON.stringify(patientWebhook)} from setting clinic patient set webhook endpoint`);
+
 
   res.send({
     response: `success. endpoint set to ${fetchApiUrl()}`,
