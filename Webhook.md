@@ -105,7 +105,7 @@ In this step, we are finally ready to authenticate our doctor, John Doe.
 
 In step 2, generated a user auth token for John, which will now be used by the Sympto frontend client to verify and authenticate John.
 
-> For the purposes of this integration, we will assume that your sandbox backend URL is **https://symptosandboxfrontend.com**.
+> For the purposes of this integration, we will assume that your sandbox frontend URL is **https://symptosandboxfrontend.com**.
 
 All we have to do is a construct a URL. For example, if we want to take John to the patient dashboard, we'd use the following structure
 `https://symptosandboxfrontend.com/provider/dashboard?userAuthToken=USER_AUTH_TOKEN`
