@@ -1,69 +1,122 @@
 
-## You've successfully integrated with the Sympto API, now what?
 
-> Before this step, it is expected that you have been able to integrate with the Sympto API. This means that you have successfully created user accounts and groups on Sympto. 
-> **If you have not yet reached this stage, please first try integrating the basic authentication and account creation API** 
+# Integrating Single Sign On with Sympto
 
-### **1. Set up a mechanism generate user-specific auth tokens within your codebase**
+This tutorial is a step by step guide on how to integrate SSO / iFrames within Sympto.
 
-For example, JSON web tokens are a popular mechanism for generating auth tokens. 
+*By the end of this guide, you will be able to generate a Sympto authentication token, which can then be used as a form of authentication on the Sympto platform.*
 
-In our sample integration documentation, you can find an example of JWT usage:
-[https://github.com/sympto-health/sympto-api/blob/master/src/jwt.ts](https://github.com/sympto-health/sympto-api/blob/master/src/jwt.ts) 
-For this example:
- - An auth token with a user's email is generated with an expiry of 10 minutes. (createAuthKey method)
- - Given an auth token, a user's email is returned  - if the auth token has not yet expired (verifyAuthKey method)
+#### Security Notes
 
-> We strongly recommend that all generated auth tokens automatically expire, and that, as a system administrator, you have the ability to invalidate any given auth token. 
+ - Your client id and client secret are **secure and sensitive** credentials. These should not be stored anywhere in **plain text**
+ - Use best practices when storing and using your client id and secret, in accordance with HITECH / HIPAA
+ - Note that e-PHI is accessible using your client id and secret
+ - Understand that by using this API, you are responsible for securing any mechanisms that allow access to e-PHI. 
+ - Sympto audits all usage of the SSO integration, and these audits are available upon request. 
+ - Reset your password every 15 days
+ - **Insecure usage of the API  and insecure storage of credentials are both in violation of the Sympto Business Addendum Agreement** 
+
+> We will use JavaScript and the [Axios](https://github.com/axios/axios) library as examples axios in this document. 
+
+> For the purposes of this integration, we will assume that your sandbox backend URL is **https://symptosandboxapi.com**.
+
+## **1. Generate a Bearer Token**
+
+Use the `/authorization` endpoint to generate a temporary bearer token. The bearer token is used as an authentication mechanism for the API and **expires 15 minutes after creation**. 
+
+> We recommend that you initiate a new bearer token for every new set of APIs being used on the Sympto platform.
+
+#### API Information
+URL: `/authorization`
+Type: `POST`
+Body: 
+| Variable | Type  |
+|--|--|
+| clientId | Email or phone number used to authenticate your clinic admin account |
+| clientSecret | Password used to authenticate your clinic admin account |
+Response (JSON)
+
+    {
+	    Status: 'OK',
+		Response: {
+			authCode: 'BEARER_TOKEN_AUTH_CODE',
+		},
+	}
+
+
+*Javascript Request Example*
+
+    const { data: { Response: authCode } } = await axios.post(
+      'https://symptosandboxapi.com/authorization', 
+      {
+        clientId: 'MY_CLIENT_ID',
+        clientSecret: 'MY_CLIENT_SECRET',
+      },
+    );
+
  
- ### **2. Set up a webhook endpoint**
+## **2. Generate a login token**
+
  
- In your codebase, set up an endpoint for Sympto to call to help authenticate a given user.
+Now that we have a bearer token, we can now access the Sympto API.
 
-Sympto will directly call your endpoint on page load, passing in an auth token (generated from step 1) along with a clientId and clientSecret.
+In step 2, we will be generating a login token associated with an individual user. This might be a patient or provider whom we want to authenticate using our single sign on or iFrame system.
 
-Here is an example of a webhook endpoint: [https://github.com/sympto-health/sympto-api/blob/master/src/routes/index.ts#L26-L48](https://github.com/sympto-health/sympto-api/blob/master/src/routes/index.ts#L26-L48)
-
-For this example:
- - First, the endpoint verifies that the authentication header and authenticationCode are passed in correctly (as non null values)
- - Second, the endpoint validates the authentication header. The authentication header is passed using  [HTTP basic auth](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Basic_authentication_scheme). The passed in client id and client secret are compared to the expected credentials. 
-> **Validating the authentication header is completely optional, but a recommended security measure, to ensure that only Sympto is calling your webhook endpoint.** 
- - Finally, the authenticationCode itself is decoded (this is the same JWT token that we generated in step 1), and the endpoint responds with an email, in the form `{ email: <email>  }`.
-
-Make sure that your endpoint fits the following constraints:
-
- - Supports the HTTP POST method
- - Validates the client id and client secret using HTTP basic auth *(optional, but strongly recommended)*
- - Decodes the authenticationCode and returns the email address of the user based on this authentication code
- - Returns a response in the format `{email: <email>}` with a status code of 200
+For the sake of this example, imagine we are building an SSO system and trying to authenticate John Doe, whose email is `john.doe@gmail.com`.
 
 
-### **3. Configure Sympto to use your webhook endpoint**
+#### API Information
+URL: `/authorization/login/token`
+Type: `POST`
+Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/)
+Body: 
+| Variable | Type  |
+|--|--|
+| email | Email of user being authenticated |
+Response (JSON)
 
-We provide a configuration endpoint 
- `POST /clinicAdmin/clinics/endpoint` 
- to allow you to customize and configure how Sympto talks to your application.
-
-As a recap, this endpoint takes 4 parameters
-
-|Param  | Type| Description |
-|--|--|--|
-| endpointURL | string | webhook URL - *for example, if our app lives on api.example.com, and we created a post endpoint at the route /sympto/webhook, this url would be https://example.com/sympto/webhook*
-| clientId | string | id passed from Sympto to your app (as part of the basic auth header), allowing you to verify Sympto is calling your webhook endpoint **Note that this is NOT your Sympto client id, this is a client id that is generated from your application** | 
-| clientSecret | string | secret passed from Sympto to your app (as part of the basic auth header), allowing you to verify Sympto is calling your webhook endpoint **Note that this is NOT your Sympto client id, this is a client secret that is generated from your application** | 
-| endpointQueryParam | string (A-Z latin alphabets only, case-sensitive) | unique keyword used by Sympto that represents your application. For example, if your application is Example App, your keyword might be example.
-
-Here is sample code of this endpoint's real world usage within our example app: [https://github.com/sympto-health/sympto-api/blob/master/src/routes/index.ts#L65-L71](https://github.com/sympto-health/sympto-api/blob/master/src/routes/index.ts#L65-L71)
+    {
+	    Status: 'OK',
+		Response: {
+			userAuthToken: 'USER_AUTH_TOKEN',
+		},
+	}
 
 
-### **4. Test your integration**
-Once you generate an auth code (see step 1), pass in the authentication code to sympto:
+*Javascript Request Example*
 
-Given an `endpointQueryParam` (see step 3) of `FoxApp`, and an authentication code of `sampleAuthCode`, navigate to Sympto:
-http://sandbox.symptohealth.com?authCodeFoxApp=sampleAuthCode
+    const { 
+        data: { Response: { userAuthToken } },
+      } = await axios.post(
+        `${clientURL}/authorization/login/token`,
+        {
+          email,
+        },
+        { headers: {'Authorization': 'Bearer '+authCode} },
+      );
 
-On navigation, Sympto will make a POST request to your app's webhook endpoint (set up in step 3). If your endpoint returns the email of a valid Sympto user, the given user will be automatically logged in to Sympto.
+####  Important: User Auth Token Properties
+ - After an auth token is created, it must be used to authenticate a user **within 60 seconds**. After 60 seconds, the auth token will *expire* and you will be required to generate a new one. 
+ - Auth Tokens are single use. Once an auth token is used, it will automatically *expire*, and for future authentications, a new auth token will need to be created. 
 
+
+## **3. Authenticate the user**
+In this step, we are finally ready to authenticate our doctor, John Doe. 
+
+In step 2, generated a user auth token for John, which will now be used by the Sympto frontend client to verify and authenticate John.
+
+> For the purposes of this integration, we will assume that your sandbox backend URL is **https://symptosandboxfrontend.com**.
+
+All we have to do is a construct a URL. For example, if we want to take John to the patient dashboard, we'd use the following structure
+`https://symptosandboxfrontend.com/provider/dashboard?userAuthToken=USER_AUTH_TOKEN`
+
+Now, we can redirect John to this URL, and Sympto will automatically authenticate John.
+
+Note that this URL must be visited within 60 seconds of step 2, or the *user auth token* will expire. 
+
+Additionally, the *user auth token* is one time use token. After John visits the patient dashboard once, a new token will need to be generated
 
 ### All Done!!!
 <img src="https://media1.giphy.com/media/l3q2zVr6cu95nF6O4/source.gif" alt="party" width="200"/>
+
+#### Email prithvi@symptohealth.com with any further questions.
