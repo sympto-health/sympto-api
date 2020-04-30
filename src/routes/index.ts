@@ -15,13 +15,10 @@ logger.info({ clientId, clientSecret, clientURL, clientFrontendURL } );
 // Generates auth code using API
 const generateAuthCode = async (clientId: string, clientSecret: string) => {
   try {
-    const { data: { Response: authCode } } = await axios.post(
-      'https://symptosandboxapi.com/authorization', 
-      {
-        clientId,
-        clientSecret,
-      },
-    );
+    const { data: { Response: authCode } } = await axios.post(`${clientURL}/authorization`, {
+      clientId,
+      clientSecret,
+    });
     logger.info(`Auth code is ${authCode}`);
     return authCode;
   } catch (e) { 
@@ -250,9 +247,7 @@ router.get('/url', async (req: Request, res: Response) => {
   }
 
   const authCode = await generateAuthCode(clientId, clientSecret);
-  const { 
-    data: { Response: { userAuthToken } },
-  } = await axios.post(
+  const { data: { Response: { userAuthToken } } } = await axios.post(
     `${clientURL}/authorization/login/token`,
     {
       email,
