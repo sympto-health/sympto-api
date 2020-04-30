@@ -27,13 +27,17 @@ Use the `/authorization` endpoint to generate a temporary bearer token. The bear
 > We recommend that you initiate a new bearer token for every new set of APIs being used on the Sympto platform.
 
 #### API Information
+
 URL: `/authorization`
+
 Type: `POST`
+
 Body: 
 | Variable | Type  |
 |--|--|
 | clientId | Email or phone number used to authenticate your clinic admin account |
 | clientSecret | Password used to authenticate your clinic admin account |
+
 Response (JSON)
 
     {
@@ -67,12 +71,16 @@ For the sake of this example, imagine we are building an SSO system and trying t
 
 #### API Information
 URL: `/authorization/login/token`
+
 Type: `POST`
+
 Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/)
+
 Body: 
 | Variable | Type  |
 |--|--|
 | email | Email of user being authenticated |
+
 Response (JSON)
 
     {
