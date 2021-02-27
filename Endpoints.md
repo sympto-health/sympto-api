@@ -156,8 +156,6 @@ Response:
 }
 ```
 
-
-
 #### Message Fetch
 
 URL: `/provider/messaging/:patientTvId`
@@ -288,5 +286,152 @@ Body: Response:
 ```
 
 ## 
+
+
+
+## File Management 
+
+####  Sending Files Endpoint
+
+URL: `/providers/file`
+
+Type: `POST`
+
+Body Parameters:
+
+| **Field**   | **Value**                                                    |
+| ----------- | ------------------------------------------------------------ |
+| file        | **Blob / File** (see https://developer.mozilla.org/en-US/docs/Web/API/Blob for Javascript). |
+| patientTvId | patientTvId (see patient data model) of the message receiver |
+| message     | ***string*** Message received by the patient                 |
+| fileName    | ***string*** Name of the file (shown in the GUI to both the patient / provider) |
+| threadId    | ***(optional) string*** By default, this does not need to be passed. *threadId* represents the UUID of the provider thread. |
+
+Body: Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: true
+}
+```
+
+####  
+
+## Response Model 
+
+#### Response Data Model 
+
+| Field            | **Value**                                                    |
+| :--------------- | ------------------------------------------------------------ |
+| patientSurveyId  | string (UUID of individual item sent out to the user)        |
+| instrumentType   | enum (type of item sent out `instrument`, `attachment`, `message`, `checklist`,  `exercise`, `media`, `chatbot`) |
+| completionMedium | Array<completion item object model> (list of all the users who participated in creating the final response) |
+| response         | response answers data object model                           |
+
+> Patient surveys are unique ids representing the individual item sent to the patient. A Generic Survey (model) should have multiple patient surveys.
+
+#### Response Answers Data Model 
+
+| Field              | **Value**                                                    |
+| :----------------- | ------------------------------------------------------------ |
+| dateCompleted      | number (Date in milliseconds from epoch for completion time) |
+| responseCompletion | enum (type of item sent out `Full` (item fully complete), `Partial` (item partially complete), ``Empty` (user not started item)) |
+| description        | Description of generic survey model associated with response |
+| surveyName         | Name of generic survey model associated with response        |
+| response           | Object - JSON blob, containing list of responses. Based on specific questions |
+| questions          | Object - JSON blob - containing list of questions in associated generic survey model |
+| responseId         | UUID associated with the response                            |
+
+#### Completion Item Data Model 
+
+| Field          | Value                                                        |
+| :------------- | ------------------------------------------------------------ |
+| channel        | enum (`Mobile` or `In-App`), medium where item was completed |
+| user.type      | role of the  responder<br />`'patient' | 'doctor' | 'nurse' | 'admin' | 'system' | 'clinicAdmin' | 'audit'` |
+| user.firstName | first name of responder                                      |
+| user.lastName  | last name of responser                                       |
+| user.tvid      | UUID associated with responder (PatientTvId for patient - see patient model) |
+
+####  Creating a new Response / Sending patient items
+
+URL : `/providers/patients/:patientTvId/recurringSurvey/:recurringSurveyId`
+
+> Recurring  surveys ids are unique ids representing the set of items sent to the user.  (See Reccuring Survey Data Model)
+
+> PatientTvId is the  unique ids representing the  patient.  (See Patient Data Model)
+
+Type: `POST`
+
+Body Parameters:
+
+| **Field**  | **Value**                                                    |
+| ---------- | ------------------------------------------------------------ |
+| type       | enum (`immediate`, `dates`) immediate sends item immediately. dates scheduled item by date |
+| startDates | Array<format `YYYY-MM-DD-hh-mm`> of dates to send item out (when type = `dates`) |
+
+Body Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: Array<ResponseId> // see Response model (one response id for each start date)
+}
+```
+
+####  
+
+####  Updating a Response
+
+URL: `/patients/responses/adhoc/:recurringSurveyId`
+
+> Recurring  surveys ids are unique ids representing the set of items sent to the user.  (See Reccuring Survey Data Model)
+
+Type: `POST`
+
+Body Parameters:
+
+| **Field**          | **Value**                                                    |
+| ------------------ | ------------------------------------------------------------ |
+| response           | Object - JSON blob, containing list of responses. Based on specific questions |
+| responseId         | UUID of response                                             |
+| responseCompletion | enum (type of item sent out `Full` (item fully complete), `Partial` (item partially complete)). Passing in `Full` marks the item as complete |
+
+Body Response: 
+
+```javascript
+{
+	Status: 'OK',
+	Response: true
+}
+```
+
+
+
+####  Configuring Response Webhook
+
+> See Reccuring Survey Data Model for webhook payload example. This payload is encrypted with the **public key**
+
+URL: `/responses/webhook`
+
+Type: `POST`
+
+Body Parameters:
+
+| **Field** | **Value**                                  |
+| --------- | ------------------------------------------ |
+| url       | URL of webhook (must be a `POST` endpoint) |
+| secret    | public key  (for asymmetric encryption)    |
+
+Body Response: 
+
+```javascript
+{
+	Status: 'OK',
+	Response: true
+}
+```
+
+
 
 #### Email prithvi@symptohealth.com with any further questions.
