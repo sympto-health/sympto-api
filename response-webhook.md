@@ -89,7 +89,7 @@ Response:
 
 ### **Webhook Response**
 
-Webhooks are sent whenever a new response is created or updated within Sympto. Webhooks for responses are garunteed to be sent **at least once**. On webhook endpoint failure (non-`200` status code), the webhook will automatically retry with exponential backoff over the next <u>3 days</u>
+Webhooks are sent whenever a new response is created or updated within Sympto. Webhooks for responses are guaranteed to be sent **at least once**. On webhook endpoint failure (non-`200` status code), the webhook will automatically retry with exponential backoff over the next <u>3 days</u>
 
 **Headers** 
 
@@ -154,10 +154,10 @@ How to validate signature?
 | Field              | **Value**                                                    |
 | ------------------ | ------------------------------------------------------------ |
 | dateCompleted      | number (Date in milliseconds from epoch for completion time) |
-| responseCompletion | enum (type of item sent out `Full` (item fully complete), `Partial` (item partially complete), ``Empty` (user not started item)) |
+| responseCompletion | enum (type of item sent out `Full` (item fully complete), `Partial` (item partially complete), `Empty` (user not started item)) |
 | description        | Description of generic survey model associated with response |
 | surveyName         | Name of generic survey model associated with response        |
-| response           | Object - JSON blob, containing list of responses. Based on specific questions |
+| response           | Object - JSON blob, containing list of responses. Based on specific questions. Schema left to developer discretion. |
 | questions          | Object - JSON blob - containing list of questions in associated generic survey model |
 | responseId         | UUID associated with the response                            |
 
@@ -166,7 +166,7 @@ How to validate signature?
 | Field          | Value                                                        |
 | -------------- | ------------------------------------------------------------ |
 | channel        | enum (`Mobile` or `In-App`), medium where item was completed |
-| user.type      | role of the responder `'patient'                             |
+| user.type      | role of the responder `'patient'`                             |
 | user.firstName | first name of responder                                      |
 | user.lastName  | last name of responser                                       |
 | user.tvid      | UUID associated with responder (PatientTvId for patient - see patient model) |
