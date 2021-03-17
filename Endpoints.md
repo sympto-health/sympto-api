@@ -166,7 +166,7 @@ Example
 }
 ```
 
-
+> Note: Patients can only be disabled / deleted via the UI 
 
 
 
@@ -576,6 +576,145 @@ Request Body Example
 ```
 
 > Response Data Model sent whenever a user interacts with a questionnaire and updates a response
+
+
+
+------
+
+### Providers
+
+#### Data Model
+
+| Field                   | Value                  | Notes                                                        |
+| ----------------------- | ---------------------- | :----------------------------------------------------------- |
+| firstName               | *string (required)*    |                                                              |
+| lastName                | *string (required)*    |                                                              |
+| timeZone                | *enum (required)*      | Timezone of the patient (patient will receive automated messages based on their timezone) [https://gist.github.com/prithvin/97266af350cf1becfc1887253a0e5a1d](https://gist.github.com/prithvin/97266af350cf1becfc1887253a0e5a1d)  see this list for a complete list of timezones Ex: Africa/Bangui is a timezone with a UTC offset of GMT+01:00 |
+| email                   | *string (optional)*    | Email or phone number are required for patient creation      |
+| phoneNumber             | *string (optional)*    | Email or phone number are required for patient creation. We accept the e.164 phone number format ([https://www.twilio.com/docs/glossary/what-e164](https://www.twilio.com/docs/glossary/what-e164)) |
+| role                    | *enum*                 | *enum values*: `doctor` | `nurse` | `clinicAdmin` | `provider`<br />(Note: doctor and nurse are being deprecated for `provider`. All existing doctor / nurse users will be migrated) |
+| notificationPreferences | Array<enum> (required) | `email` `text` .<br /><br />Options for how the patient would like to receive notifications: `email` `text`. Patient must have email provided if email notifications set. Patient must have phone provided if text notifications set. |
+| providerTvId            | *string (required*)    | UUID for provider                                            |
+
+#### **Provider Creation**
+
+Creates a provider + creates a group associated with the provider. See [groups](https://github.com/sympto-health/sympto-api/blob/master/Endpoints.md#Groups)
+
+In order to give providers access to a patient, a patient must be added to a group associated with a provider.
+
+##### **Side effects of provider account creation**
+
+> Provider receives introductory password reset / welcome message via notification channels
+
+URL: `/providers`
+
+Type: `POST`
+
+Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/)
+
+Body:
+
+| Field                     | Value (See Data Model)                                       |
+| ------------------------- | ------------------------------------------------------------ |
+| firstName                 | *string (required)*                                          |
+| lastName                  | *string (required)*                                          |
+| timeZone                  | *string (required)*                                          |
+| email                     | *string (optional)*                                          |
+| phoneNumber               | *string (optional)*                                          |
+| role                      | *enum (optional)*                                            |
+| notificationPreferences   | *Array (required)*                                           |
+| options.disableIntroEmail | *boolean (optional)*<br />if set to true, does not send out introductory password reset / welcome message - this can be later sent out manually through the UI |
+
+Response:
+
+```
+{
+	Status: 'OK',
+	Response: providerTvId (see provider data model)
+}
+```
+
+#### Provider Management
+
+URL: `/providers`
+
+Type: `GET`
+
+Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/)
+
+Query: -
+
+> Always returns a list of all providers in the clinic
+
+Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: Array<Provider Data Model + Group Data Model> (see example response)
+}
+```
+
+Example Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: {
+    firstName: 'John',
+    lastName: 'Doe',
+    timeZone: 'America/Los_Angeles',
+    email: null,
+    phoneNumber: '+16507935243',
+    role: 'clinicAdmin',
+    notificationPreferences: ['email'],
+    groups: Array<{
+      groupName: 'Provider Group',
+      groupId: '3c0084bc-8b79-410f-b392-853e469b7753'
+    }>
+    // may include extra fields with patient metadata
+  }
+}
+```
+
+> Note: Providers can only be disabled / deleted via the UI 
+
+#### **Provider U**pdating
+
+Updates provider data fields
+
+##### **Side effects of provider account creation**
+
+> Provider data model is updated for given `providerTvId`
+
+URL: `/providers/:providerTvId`
+
+Type: `POST`
+
+Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/)
+
+Body:
+
+| Field                   | Value (See Data Model) |
+| ----------------------- | ---------------------- |
+| firstName               | *string (required)*    |
+| lastName                | *string (required)*    |
+| timeZone                | *string (required)*    |
+| email                   | *string (optional)*    |
+| phoneNumber             | *string (optional)*    |
+| role                    | *enum (optional)*      |
+| notificationPreferences | *Array (required)*     |
+
+Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: true
+}
+```
+
+#### 
 
 
 
