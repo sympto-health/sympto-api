@@ -84,7 +84,7 @@ In order to give providers access to a patient, a patient must be added to a gro
 > Patient receives introductory consent message via notification channels
 
 
-URL: `/providers/patient/create`
+URL: `/providers/patient` 
 
 Type: `POST`
 
@@ -113,6 +113,113 @@ Response:
 	Response: patientTvId (see patient data model)
 }
 ```
+
+
+
+#### **Patient Management**
+
+URL: `/providers/patient` 
+
+Type: `GET`
+
+Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/)
+
+Query Parameters:
+
+| **Field** | **Value**                                                    |
+| --------- | ------------------------------------------------------------ |
+| query     | **optional**. String representing a filter search term. Internally uses fuzzy search to query based on firstName, lastName, timeZone, email,p honeNumber, sex, dob, language and mrn fields |
+| limit     | number. **optional**. default none                           |
+| offset    | **optional**. UUID for last patient on previous page         |
+
+Body: Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: Array<Patient Data Model + Group Data Model> (see example response)
+}
+```
+
+Example 
+
+```javascript
+{
+  Status: 'OK',
+  Response: [{
+    firstName: 'John',
+    lastName: 'Doe',
+    timeZone: 'America/Los_Angeles',
+    email: null,
+    phoneNumber: '+16507935243',
+    sex: 'M',
+    dob: '12-24-1934',
+    language: 'English',
+    mrn: null,
+    notificationType: ['email'],
+    groups: Array<{
+      groupName: 'Provider Group',
+      groupId: '3c0084bc-8b79-410f-b392-853e469b7753'
+    }>
+    // may include extra fields with patient metadata
+  }]
+}
+```
+
+
+
+
+
+####  Configuring Patient Webhook
+
+URL: `/patients/webhook`
+
+Type: `POST`
+
+Body Parameters:
+
+| **Field** | **Value**                                  |
+| --------- | ------------------------------------------ |
+| url       | URL of webhook (must be a `POST` endpoint) |
+
+Body Response: 
+
+```javascript
+{
+	Status: 'OK',
+	Response: true
+}
+```
+
+**Webhook Payload**
+
+See Webhook [webhook validation](https://github.com/sympto-health/sympto-api/blob/master/Endpoints.md#Webhook%20Validation) for more information
+
+Request Body Example
+
+```javascript
+{
+	firstName: 'John',
+  lastName: 'Doe',
+  timeZone: 'America/Los_Angeles',
+  email: null,
+  phoneNumber: '+16507935243',
+  sex: 'M',
+  dob: '12-24-1934',
+  language: 'English',
+  mrn: null,
+  notificationType: ['email']
+}
+```
+
+> Patient Data Model sent whenenver a patient is created or updated
+
+
+
+####  
+
+------
+
 
 
 ## **Messages**
@@ -184,6 +291,10 @@ Response:
 ```
 
 
+
+####  
+
+------
 
 
 
@@ -260,8 +371,6 @@ Response:
 
 ## 
 
-
-
 ####  Fetch Instrument Responses  Endpoint
 
 URL: `/providers/patients/:patientTvId/items`
@@ -286,6 +395,8 @@ Body: Response:
 ```
 
 ## 
+
+------
 
 
 
@@ -317,6 +428,10 @@ Body: Response:
 ```
 
 ####  
+
+------
+
+
 
 ## Response Model 
 
@@ -410,8 +525,6 @@ Body Response:
 
 ####  Configuring Response Webhook
 
-> See Reccuring Survey Data Model for webhook payload example. This payload is encrypted with the **public key**
-
 URL: `/responses/webhook`
 
 Type: `POST`
@@ -421,7 +534,6 @@ Body Parameters:
 | **Field** | **Value**                                  |
 | --------- | ------------------------------------------ |
 | url       | URL of webhook (must be a `POST` endpoint) |
-| secret    | public key  (for asymmetric encryption)    |
 
 Body Response: 
 
@@ -432,6 +544,236 @@ Body Response:
 }
 ```
 
+**Webhook Payload**
 
+See Webhook [webhook validation](https://github.com/sympto-health/sympto-api/blob/master/Endpoints.md#Webhook%20Validation) for more information
+
+Request Body Example
+
+```javascript
+{
+	patientSurveyId: 'd7f92712-f34a-4123-a623-f0fc55544204',
+	instrumentType: 'instrument',
+  completionMedium: [{
+    channel: 'Mobile',
+    user: {
+      type: 'patient',
+      firstName: 'John',
+      lastName: 'Doe',
+      tvid: 'd62e7336-1288-4efc-8a92-938e225070a1',
+    },
+  }],
+  response: {
+    dateCompleted: 1615978718331,
+    responseCompletion: 'Partial',
+    description: 'Sample description',
+    surveyName: 'Sample instrument',
+    response: {...},
+    questions: {...},
+    responseId: '314a18e0-4bc6-4be2-8dda-f21349d33789',
+  },
+}
+```
+
+> Response Data Model sent whenever a user interacts with a questionnaire and updates a response
+
+
+
+------
+
+### Groups
+
+#### Data Model
+
+| Field     | Value                                                        | Notes          |
+| --------- | ------------------------------------------------------------ | :------------- |
+| groupName | *string (required)*                                          |                |
+| groupId   | *string (required)*                                          | UUID for group |
+| users     | Array<{ tvid: Provider or Patient UUID, role: 'provider' \| 'clinicAdmin' \| 'patient" }> |                |
+
+
+#### **Group Creation**
+
+> Note that whenever a provider is created (see Provider Management APIs), a group is automatically created too, named "<First Name> <Last Name>'s Group'". The provider is automatically assigned to the group
+
+
+URL: `/providers/groups` 
+
+Type: `POST`
+
+Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/)
+
+Body:
+
+| Field     | Value (See Data Model) |
+| --------- | ---------------------- |
+| groupName | *string (required)*    |
+
+Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: groupId (see group data model)
+}
+```
+
+
+
+#### **Editing Group**
+
+URL: `/groups/:groupId` 
+
+> URL Parameters :groupId -> (see group data model)
+
+Type: `POST`
+
+Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/)
+
+Body:
+
+| Field     | Value (See Data Model) |
+| --------- | ---------------------- |
+| groupName | *string (required)*    |
+
+##### **Side effects of e**diting group
+
+> Group name is updated
+
+Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: true
+}
+```
+
+
+
+#### **Deleting Group**
+
+URL: `/groups/:groupId` 
+
+> URL Parameters :groupId -> (see group data model)
+
+Type: `DELETE`
+
+Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/)
+
+Body: -
+
+##### **Side effects of deleting group
+
+> Group is deleted
+
+Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: true
+}
+```
+
+
+
+#### Adding User to Group
+
+URL: `/groups/:groupId/users` 
+
+> URL Parameters :groupId -> (see group data model)
+
+Type: `POST`
+
+Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/)
+
+Body:
+
+| Field    | Value (See Data Model)                                       |
+| -------- | ------------------------------------------------------------ |
+| userTvId | *string (required)*<br />UUID representing either patient (see patientTvId in Patient Data Model) or provider (see providerTvId in Provider Data Model) |
+
+##### **Side effects of e**diting group
+
+> User is added to the group. Nothing happens if user is already in the group
+
+Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: true
+}
+```
+
+
+
+#### Removing User to Group
+
+URL: `/groups/:groupId/users` 
+
+> URL Parameters :groupId -> (see group data model)
+
+Type: `DELETE`
+
+Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/)
+
+Body:
+
+| Field    | Value (See Data Model)                                       |
+| -------- | ------------------------------------------------------------ |
+| userTvId | *string (required)*<br />UUID representing either patient (see patientTvId in Patient Data Model) or provider (see providerTvId in Provider Data Model) |
+
+##### **Side effects of e**diting group
+
+> User is removed to the group. Nothing happens if user is not in the group already
+
+Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: true
+}
+```
+
+
+
+------
+
+
+
+### **Webhook Validation**
+
+Webhooks are sent whenever a new response is created or updated within Sympto. Webhooks for responses are guaranteed to be sent **at least once**. On webhook endpoint failure (non-`200` status code), the webhook will automatically retry with exponential backoff over the next 3 days
+
+**Headers**
+
+> Use headers to verify events that Sympto sends to your webhook endpoint.
+
+| **Field**                  | Value                                                        |
+| -------------------------- | ------------------------------------------------------------ |
+| X-Sympto-Webhook-Signature | base64 encoded HMAC SHA-256 hash and timestamp (to prevent replay attacks) |
+
+> Sympto generates the timestamp and signature each time an event is sent to your endpoint. If Sympto retries an event (e.g., your endpoint previously replied with a non-`200` status code), then a new signature and timestamp is generated for the new delivery attempt.
+
+Example signature:
+
+```
+X-Sympto-Webhook-Signature: t=1492774577,v=5257a869e7ecebeda32affa62cdca3fa51cad7e77a0e56ff536d0ce8e108d8bd
+```
+
+How to validate signature?
+
+1. Extract timestamp / signatures from the header.
+
+   Split the header, using the `,` character as the separator, to get a list of elements. Then split each element, using the `=` character as the separator, to get a prefix and value pair.
+
+   The value for the prefix `t` corresponds to the timestamp, and `v` corresponds to the signature (or signatures). You can discard all other elements.
+
+2. Use the response body to compute an HMAC with the SHA256 hash function (with the `endpointSecret` as the key)
+
+3. Compare the signature (or signatures) in the header to the expected signature. For an equality match, compute the difference between the current timestamp and the received timestamp, then decide if the difference is within your tolerance.
 
 #### Email prithvi@symptohealth.com with any further questions.
