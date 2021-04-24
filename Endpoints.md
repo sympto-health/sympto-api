@@ -84,7 +84,7 @@ In order to give providers access to a patient, a patient must be added to a gro
 > Patient receives introductory consent message via notification channels
 
 
-URL: `/providers/patient` 
+URL: `/providers/patients` 
 
 Type: `POST`
 
