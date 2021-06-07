@@ -819,19 +819,18 @@ Response:
 
 #### Adding User to Group
 
-URL: `/groups/:groupId/users` 
+URL: `/clinicAdmin/groups/manage` 
 
-> URL Parameters :groupId -> (see group data model)
-
-Type: `POST`
+Type: `PUT`
 
 Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/)
 
 Body:
 
-| Field    | Value (See Data Model)                                       |
-| -------- | ------------------------------------------------------------ |
-| userTvId | *string (required)*<br />UUID representing either patient (see patientTvId in Patient Data Model) or provider (see providerTvId in Provider Data Model) |
+| Field   | Value (See Data Model)                                       |
+| ------- | ------------------------------------------------------------ |
+| userId  | *string (required)*<br />UUID representing either patient (see patientTvId in Patient Data Model) or provider (see providerTvId in Provider Data Model) |
+| groupId | *string (required)*<br />UUID representing group (see groupId in Group Data Model) |
 
 ##### **Side effects of e**diting group
 
@@ -850,9 +849,7 @@ Response:
 
 #### Removing User to Group
 
-URL: `/groups/:groupId/users` 
-
-> URL Parameters :groupId -> (see group data model)
+URL: `/clinicAdmin/groups/manage` 
 
 Type: `DELETE`
 
@@ -860,9 +857,10 @@ Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/
 
 Body:
 
-| Field    | Value (See Data Model)                                       |
-| -------- | ------------------------------------------------------------ |
-| userTvId | *string (required)*<br />UUID representing either patient (see patientTvId in Patient Data Model) or provider (see providerTvId in Provider Data Model) |
+| Field   | Value (See Data Model)                                       |
+| ------- | ------------------------------------------------------------ |
+| userId  | *string (required)*<br />UUID representing either patient (see patientTvId in Patient Data Model) or provider (see providerTvId in Provider Data Model) |
+| groupId | *string (required)*<br />UUID representing group (see groupId in Group Data Model) |
 
 ##### **Side effects of e**diting group
 
@@ -873,7 +871,37 @@ Response:
 ```javascript
 {
 	Status: 'OK',
-	Response: true
+	Response: 'User removed from group!'
+}
+```
+
+
+
+#### Set Groups for User
+
+URL: `/clinicAdmin/groups/manage` 
+
+Type: `POST`
+
+Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/)
+
+Body:
+
+| Field    | Value (See Data Model)                                       |
+| -------- | ------------------------------------------------------------ |
+| userId   | *string (required)*<br />UUID representing either patient (see patientTvId in Patient Data Model) or provider (see providerTvId in Provider Data Model) |
+| groupIds | *Array<string> (required)*<br />UUID representing group (see groupId in Group Data Model) |
+
+##### **Side effects of e**diting group
+
+> User is enrolled in all the groups passed in the `groupIds` parameters. User is **removed ** from any group not passed in `groupIds`. After this endpoint finishes executing, the user will onlty be enrolled in groups associated with the `groupIds` array paramter.
+
+Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: 'User removed from group!'
 }
 ```
 
