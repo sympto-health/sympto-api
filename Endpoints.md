@@ -92,18 +92,19 @@ Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/
 
 Body:
 
-| Field            | Value (See Data Model)   |
-| ---------------- | ------------------------ |
-| firstName        | *string (required)*      |
-| lastName         | *string (required)*      |
-| timeZone         | *string (required)*      |
-| email            | *string (optional)*      |
-| phoneNumber      | *string (optional)*      |
-| sex              | *enum (optional)*        |
-| dob              | *string (optional)*      |
-| language         | *enum (optional)*        |
-| mrn              | *string (optional)*      |
-| notificationType | *Array<enum> (required)* |
+| Field            | Value (See Data Model)                                       |
+| ---------------- | ------------------------------------------------------------ |
+| firstName        | *string (required)*                                          |
+| lastName         | *string (required)*                                          |
+| timeZone         | *string (required)*                                          |
+| email            | *string (optional)*                                          |
+| phoneNumber      | *string (optional)*                                          |
+| sex              | *enum (optional)*                                            |
+| dob              | *string (optional)*                                          |
+| language         | *enum (optional)*                                            |
+| mrn              | *string (optional)*                                          |
+| notificationType | *Array<enum> (required)*                                     |
+| campaignIds      | Array<string> (optional) - list of campaign ids to enroll patient in (see campaign data model) |
 
 Response:
 
@@ -298,6 +299,67 @@ Response:
 
 
 
+## Campaigns
+
+#### Campaign Data Model
+
+| **Field**     | Value         | Notes                          |
+| ------------- | ------------- | ------------------------------ |
+| name          | *string*      | Name of the campaign           |
+| description   | *string*      | Description of campaign        |
+| campaignItems | *Array<JSON>* | Array of items in the campaign |
+| campaignId    | *string*      | UUID representing the campaign |
+
+
+
+#### Fetch campaigns endpoint
+
+URL: `/providers/campaigns`
+
+Type: `GET` 
+
+Parameters: N/A
+
+Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: Array<Campaign Data Model>
+}
+```
+
+####  
+
+#### Assign patient to campaign
+
+URL: `/providers/patients/:patientTvId/campaigns`
+
+> URL Parameters :patientTvId -> (see patient data model)
+
+Type: `GET` 
+
+Query Parameters:
+
+| **Field**  | **Value**                                                    |
+| ---------- | ------------------------------------------------------------ |
+| CampaignId | **required**. UUID representing the campaign (see campaignId in campaign data model) |
+
+Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: { patientCampaignId: string }
+}
+```
+
+#### 
+
+------
+
+
+
 ## Generic Surveys
 
 #### Generic Survey Data Model 
@@ -321,7 +383,7 @@ Response:
 | surveyStartDate   | (for type recurring), when item should be sent out in patient timezone (date)<br />format `YYYY-MM-DD` |
 | frequency         | (for type recurring)<br /><br />`{ type: 'weekly', everyN: number, days: Array<'Sun'|'Mon'|'Tue'|'Wed'|'Thu'|'Fri'|'Sat'>, }`<br />type weekly, send out every n weeks on specified days <br /><br />`{ type: 'daily', everyN: number }`<br />type weekly, send out every n days <br /><br />`{ type: 'monthly', everyN: number, day: number }`<br />type monthly, send out every n months on a specific day (1-31) of the month <br /> |
 
-#### Reccuring Survey Data Model 
+#### Recurring Survey Data Model 
 
 | Field               | **Value**           | **Notes**                                                    |
 | ------------------- | ------------------- | ------------------------------------------------------------ |
@@ -336,8 +398,6 @@ Response:
 > Generic surveys that are assigned to patients are called RecurringSurveys. Each patient has an individual recurring survey for each assigned media item / instrument.
 >
 > Recurring surveys can be assigned to patients manually **or ** through a campaign. When assigned via campaign, the associated campaign is available within the recurring survey data model
-
-
 
 
 
@@ -390,7 +450,7 @@ Body: Response:
 ```javascript
 {
 	Status: 'OK',
-	Response: Array<Reccuring Survey Data Model>
+	Response: Array<Recurring Survey Data Model>
 }
 ```
 
@@ -592,7 +652,7 @@ Request Body Example
 | timeZone                | *enum (required)*      | Timezone of the patient (patient will receive automated messages based on their timezone) [https://gist.github.com/prithvin/97266af350cf1becfc1887253a0e5a1d](https://gist.github.com/prithvin/97266af350cf1becfc1887253a0e5a1d)  see this list for a complete list of timezones Ex: Africa/Bangui is a timezone with a UTC offset of GMT+01:00 |
 | email                   | *string (optional)*    | Email or phone number are required for patient creation      |
 | phoneNumber             | *string (optional)*    | Email or phone number are required for patient creation. We accept the e.164 phone number format ([https://www.twilio.com/docs/glossary/what-e164](https://www.twilio.com/docs/glossary/what-e164)) |
-| role                    | *enum*                 | *enum values*: `doctor` | `nurse` | `clinicAdmin` | `provider`<br />(Note: doctor and nurse are being deprecated for `provider`. All existing doctor / nurse users will be migrated) |
+| role                    | *enum*                 | *enum values*: `clinicAdmin` | `provider`                    |
 | notificationPreferences | Array<enum> (required) | `email` `text` .<br /><br />Options for how the patient would like to receive notifications: `email` `text`. Patient must have email provided if email notifications set. Patient must have phone provided if text notifications set. |
 | providerTvId            | *string (required*)    | UUID for provider                                            |
 
@@ -944,3 +1004,4 @@ How to validate signature?
 3. Compare the signature (or signatures) in the header to the expected signature. For an equality match, compute the difference between the current timestamp and the received timestamp, then decide if the difference is within your tolerance.
 
 #### Email prithvi@symptohealth.com with any further questions.
+
