@@ -76,7 +76,7 @@ const { data: { Response: authCode } } = await axios.post(
 
 | **Field**          | Value                                    | **Notes**                                                    |
 | ------------------ | ---------------------------------------- | ------------------------------------------------------------ |
-| value              | `null` | `string` | `boolean` | `number` | Based on the type of the patient attribute                   |
+| value              | `null`  `string` |`boolean` `number` | Based on the type of the patient attribute                   |
 | patientAttributeId | UUID for patient attribute               | Can fetch this via endpoint  GET request  `/providers/clinic/attributes` |
 
 
