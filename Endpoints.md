@@ -72,6 +72,14 @@ const { data: { Response: authCode } } = await axios.post(
 | notificationType | Array<enum> (required) | `email` `text` `whatsapp`.<br /><br />Options for how the patient would like to receive notifications: `email` `text` `whatsapp`. Patient must have email provided if email notifications set. Patient must have phone provided if text or WhatsApp notifications set. |
 | patientTvId      | *string (required*)    | UUID for patient                                             |
 
+**Patient Attribute Model**
+
+| **Field**          | Value                                    | **Notes**                                                    |
+| ------------------ | ---------------------------------------- | ------------------------------------------------------------ |
+| value              | `null` | `string` | `boolean` | `number` | Based on the type of the patient attribute                   |
+| patientAttributeId | UUID for patient attribute               | Can fetch this via endpoint  GET request  `/providers/clinic/attributes` |
+
+
 
 #### **Patient Creation**
 
@@ -92,20 +100,20 @@ Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/
 
 Body:
 
-| Field            | Value (See Data Model)                                       |
-| ---------------- | ------------------------------------------------------------ |
-| firstName        | *string (required)*                                          |
-| lastName         | *string (required)*                                          |
-| timeZone         | *string (required)*                                          |
-| email            | *string (optional)*                                          |
-| phoneNumber      | *string (optional)*                                          |
-| sex              | *enum (optional)*                                            |
-| dob              | *string (optional)*                                          |
-| language         | *enum (optional)*                                            |
-| mrn              | *string (optional)*                                          |
-| notificationType | *Array<enum> (required)*                                     |
-| campaignIds      | Array<string> (optional) - list of campaign ids to enroll patient in (see campaign data model) |
-| patientAttributes | Array({ value: null | string | boolean | number, patientAttributeId: string }) |
+| Field             | Value (See Data Model)                                       |
+| ----------------- | ------------------------------------------------------------ |
+| firstName         | *string (required)*                                          |
+| lastName          | *string (required)*                                          |
+| timeZone          | *string (required)*                                          |
+| email             | *string (optional)*                                          |
+| phoneNumber       | *string (optional)*                                          |
+| sex               | *enum (optional)*                                            |
+| dob               | *string (optional)*                                          |
+| language          | *enum (optional)*                                            |
+| mrn               | *string (optional)*                                          |
+| notificationType  | *Array<enum> (required)*                                     |
+| campaignIds       | Array<string> (optional) - list of campaign ids to enroll patient in (see campaign data model) |
+| patientAttributes | Array<PatientAttributeModel> (optional) - list  of patient attributes to enroll patient in |
 
 Response:
 
@@ -1005,4 +1013,5 @@ How to validate signature?
 3. Compare the signature (or signatures) in the header to the expected signature. For an equality match, compute the difference between the current timestamp and the received timestamp, then decide if the difference is within your tolerance.
 
 #### Email prithvi@symptohealth.com with any further questions.
+
 
