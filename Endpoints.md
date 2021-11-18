@@ -76,7 +76,7 @@ const { data: { Response: authCode } } = await axios.post(
 
 | **Field**          | Value                                    | **Notes**                                                    |
 | ------------------ | ---------------------------------------- | ------------------------------------------------------------ |
-| value              | `null`  `string` |`boolean` `number` | Based on the type of the patient attribute                   |
+| value              | `null`  `string` `boolean` `number` | Based on the type of the patient attribute                   |
 | patientAttributeId | UUID for patient attribute               | Can fetch this via endpoint  GET request  `/providers/clinic/attributes` |
 
 
@@ -113,7 +113,7 @@ Body:
 | mrn               | *string (optional)*                                          |
 | notificationType  | *Array<enum> (required)*                                     |
 | campaignIds       | Array<string> (optional) - list of campaign ids to enroll patient in (see campaign data model) |
-| patientAttributes | Array<PatientAttributeModel> (optional) - list  of patient attributes to enroll patient in |
+| patientAttributes | Array(PatientAttributeModel) (optional) - list  of patient attributes to enroll patient in |
 
 Response:
 
