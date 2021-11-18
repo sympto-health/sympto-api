@@ -105,7 +105,7 @@ Body:
 | mrn              | *string (optional)*                                          |
 | notificationType | *Array<enum> (required)*                                     |
 | campaignIds      | Array<string> (optional) - list of campaign ids to enroll patient in (see campaign data model) |
-| patientAttributes | Array<{| value: null | string | boolean | number, patientAttributeId: string |}> |
+| patientAttributes | Array({ value: null | string | boolean | number, patientAttributeId: string }) |
 
 Response:
 
