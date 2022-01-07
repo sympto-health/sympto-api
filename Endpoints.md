@@ -352,7 +352,7 @@ Query Parameters:
 
 | **Field**  | **Value**                                                    |
 | ---------- | ------------------------------------------------------------ |
-| CampaignId | **required**. UUID representing the campaign (see campaignId in campaign data model) |
+| campaignId | **required**. UUID representing the campaign (see campaignId in campaign data model) |
 
 Response:
 
