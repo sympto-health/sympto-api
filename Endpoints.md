@@ -346,7 +346,7 @@ URL: `/providers/patients/:patientTvId/campaigns`
 
 > URL Parameters :patientTvId -> (see patient data model)
 
-Type: `GET` 
+Type: `POST` 
 
 Query Parameters:
 
