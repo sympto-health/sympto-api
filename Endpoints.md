@@ -72,15 +72,6 @@ const { data: { Response: authCode } } = await axios.post(
 | notificationType | Array<enum> (required) | `email` `text` `whatsapp`.<br /><br />Options for how the patient would like to receive notifications: `email` `text` `whatsapp`. Patient must have email provided if email notifications set. Patient must have phone provided if text or WhatsApp notifications set. |
 | patientTvId      | *string (required*)    | UUID for patient                                             |
 
-**Patient Attribute Model**
-
-| **Field**          | Value                                    | **Notes**                                                    |
-| ------------------ | ---------------------------------------- | ------------------------------------------------------------ |
-| value              | `null`  `string` `boolean` `number` | Based on the type of the patient attribute                   |
-| patientAttributeId | UUID for patient attribute               | Can fetch this via endpoint  GET request  `/providers/clinic/attributes` |
-
-
-
 #### **Patient Creation**
 
 Creates a patient. Patients by default are not accessible by any providers aside from the clinic administrator.
@@ -226,11 +217,100 @@ Request Body Example
 
 
 
-####  
+#### 
 
 ------
 
 
+
+## **Patient Attributes**
+
+#### Data Model
+
+##### Patient Attribute Model
+
+| **Field** | Value    | **Notes**                                                    |
+| --------- | -------- | ------------------------------------------------------------ |
+| title     | `string` | Title that shows for a given patient attribute in the GUI    |
+| id        | `string` | UUID for patient attribute                                   |
+| name      | `string` | Name of patient attribute (set in clinic admin settings, can be different from title). <u>unique</u> per clinic |
+| type      | *enum*   | Type of patient attribute<br />`null` |  `string `|  `boolean`|  `number` |
+
+
+
+##### Patient Attribute Values Model
+
+| **Field**          | Value                               | **Notes**                                                    |
+| ------------------ | ----------------------------------- | ------------------------------------------------------------ |
+| value              | `null`  `string` `boolean` `number` | Based on the type of the patient attribute                   |
+| patientAttributeId | UUID for patient attribute          | Can fetch this via endpoint  GET request  `/providers/clinic/attributes` |
+
+
+
+#### Listing Attributes
+
+URL: `/providers/clinic/attributes`
+
+Type: `GET`
+
+Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: Array<PatientAttributeDataModel> (see message data model)
+}
+```
+
+
+
+#### Set Attribute
+
+URL: `/providers/:patientTvId/attributes`
+
+> URL Parameters :patientTvId -> (see patient data model)
+
+Type: `POST`
+
+Body: 
+
+| Variable       | Type                                | **Value**                                  |
+| -------------- | ----------------------------------- | ------------------------------------------ |
+| name           | `string`                            | Attribute **name** (not UUID)              |
+| attributeValue | `null`  `string` `boolean` `number` | Based on the type of the patient attribute |
+
+Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: true
+}
+```
+
+> When a patient attribute is set, the patient is automatically enrolled in any campaigns that depend on the patient attribute
+
+
+
+#### How to use Patient Attributes
+
+1) Log in as a clinic admin
+
+2) <img src="./settings.png" alt="image-20220117235133618" style="zoom:25%;" />
+
+3) Create a new patient attribute
+
+   <img src="./attribute.png" alt="image-20220117235241410" style="zoom:50%;" />
+
+4. Navigate to campaigns tab and create campaign
+
+   <img src="./campaignsdropdown.png" alt="image-20220117235404185" style="zoom:50%;" />
+
+5. Auto enroll user in campaign if test attribute == a certain value
+
+   <img src="./autoenroll.png" alt="image-20220117235536449" style="zoom:50%;" />
+
+6. When patient attribute set, user will be automatically enrolled in the campaign
 
 ## **Messages**
 
@@ -1013,5 +1093,4 @@ How to validate signature?
 3. Compare the signature (or signatures) in the header to the expected signature. For an equality match, compute the difference between the current timestamp and the received timestamp, then decide if the difference is within your tolerance.
 
 #### Email prithvi@symptohealth.com with any further questions.
-
 
