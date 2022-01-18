@@ -296,19 +296,19 @@ Response:
 
 1) Log in as a clinic admin
 
-2) <img src="./settings.png" alt="image-20220117235133618" style="zoom:25%;" />
+2) <img src="./settings.png" alt="image-20220117235133618" height="200" />
 
 3) Create a new patient attribute
 
-   <img src="./attribute.png" alt="image-20220117235241410" style="zoom:50%;" />
+   <img src="./attribute.png" alt="image-20220117235241410" height="200" />
 
 4. Navigate to campaigns tab and create campaign
 
-   <img src="./campaignsdropdown.png" alt="image-20220117235404185" style="zoom:50%;" />
+   <img src="./campaignsdropdown.png" alt="image-20220117235404185" height="200" />
 
 5. Auto enroll user in campaign if test attribute == a certain value
 
-   <img src="./autoenroll.png" alt="image-20220117235536449" style="zoom:50%;" />
+   <img src="./autoenroll.png" alt="image-20220117235536449" height="200" />
 
 6. When patient attribute set, user will be automatically enrolled in the campaign
 
