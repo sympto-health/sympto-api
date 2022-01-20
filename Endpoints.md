@@ -1,3 +1,4 @@
+
   
 
 # Available Endpoints 
@@ -35,10 +36,10 @@ Response (JSON)
 
 ```javascript
 {
-		Status: 'OK',
-		Response: {
-				authCode: 'BEARER_TOKEN_AUTH_CODE',
-		}
+	Status: 'OK',
+	Response: {
+		authCode: 'BEARER_TOKEN_AUTH_CODE',
+	}
 }
 ```
 
@@ -67,7 +68,7 @@ const { data: { Response: authCode } } = await axios.post(
 | phoneNumber      | *string (optional)*    | Email or phone number are required for patient creation. We accept the e.164 phone number format ([https://www.twilio.com/docs/glossary/what-e164](https://www.twilio.com/docs/glossary/what-e164)) |
 | sex              | *enum (optional)*      | *enum values*: `'M' 'F' 'X'`                                 |
 | dob              | *string (optional)*    | format `YYYY-MM-DD`                                          |
-| language         | *enum (optional)*      | `'English' | 'Spanish' | 'French'` -> patients receive automated Whatsapp consent messages in specified language / see patient portal in specified language |
+| language         | *enum (optional)*      | `'English', 'Spanish', 'French'` -> patients receive automated Whatsapp consent messages in specified language / see patient portal in specified language |
 | mrn              | *string (optional)*    | Medical record number                                        |
 | notificationType | Array<enum> (required) | `email` `text` `whatsapp`.<br /><br />Options for how the patient would like to receive notifications: `email` `text` `whatsapp`. Patient must have email provided if email notifications set. Patient must have phone provided if text or WhatsApp notifications set. |
 | patientTvId      | *string (required*)    | UUID for patient                                             |
@@ -129,7 +130,7 @@ Query Parameters:
 
 | **Field** | **Value**                                                    |
 | --------- | ------------------------------------------------------------ |
-| query     | **optional**. String representing a filter search term. Internally uses fuzzy search to query based on firstName, lastName, timeZone, email,p honeNumber, sex, dob, language and mrn fields |
+| query     | **optional**. String representing a filter search term. Internally uses fuzzy search to query based on firstName, lastName, timeZone, email, phoneNumber, sex, dob, language and mrn fields |
 | limit     | number. **optional**. default none                           |
 | offset    | **optional**. UUID for last patient on previous page         |
 
@@ -201,19 +202,19 @@ Request Body Example
 ```javascript
 {
 	firstName: 'John',
-  lastName: 'Doe',
-  timeZone: 'America/Los_Angeles',
-  email: null,
-  phoneNumber: '+16507935243',
-  sex: 'M',
-  dob: '12-24-1934',
-  language: 'English',
-  mrn: null,
-  notificationType: ['email']
+	lastName: 'Doe',
+	timeZone: 'America/Los_Angeles',
+	email: null,
+	phoneNumber: '+16507935243',
+	sex: 'M',
+	dob: '12-24-1934',
+	language: 'English',
+	mrn: null,
+	notificationType: ['email']
 }
 ```
 
-> Patient Data Model sent whenenver a patient is created or updated
+> Patient Data Model sent whenever a patient is created or updated
 
 
 
@@ -234,7 +235,7 @@ Request Body Example
 | title     | `string` | Title that shows for a given patient attribute in the GUI    |
 | id        | `string` | UUID for patient attribute                                   |
 | name      | `string` | Name of patient attribute (set in clinic admin settings, can be different from title). <u>unique</u> per clinic |
-| type      | *enum*   | Type of patient attribute<br />`null` |  `string `|  `boolean`|  `number` |
+| type      | *enum*   | Type of patient attribute<br />`null`,  `string `, `boolean`,  `number` |
 
 
 
@@ -277,7 +278,34 @@ Body:
 | Variable       | Type                                | **Value**                                  |
 | -------------- | ----------------------------------- | ------------------------------------------ |
 | name           | `string`                            | Attribute **name** (not UUID)              |
-| attributeValue | `null`  `string` `boolean` `number` | Based on the type of the patient attribute |
+| attributeValue | AttributeValue data type (see below) | Based on the type of the patient attribute |
+	
+Attribute Value Data Type:
+| Variable       | Type                                | **Value**                                  |
+| -------------- | ----------------------------------- | ------------------------------------------ |
+| type           | *`enum`*              | type of patient attribute<br />`'string', 'boolean', 'number'` |
+| value | `null`  `string` `boolean` `number` | Based on the type of the patient attribute |
+
+Example Request: 
+```javascript
+{
+	name: 'dob',
+	attributeValue: {
+		type: 'string',
+		value: '12-24-1997',
+	}
+}
+```
+
+```javascript
+{
+	name: 'age',
+	attributeValue: {
+		type: 'number',
+		value: 23,
+	}
+}
+```	
 
 Response:
 
@@ -327,7 +355,7 @@ Response:
 | id             | string            | UUID of message                                              |
 | viewed         | Array<object>     | Array of objects specifying  who has viewed the message      |
 | patientId      | string            | patientTvId (see patient data model) of the message receiver |
-| role           | Enum              | role of the sender<br />`'patient' | 'doctor' | 'nurse' | 'admin' | 'system' | 'clinicAdmin' | 'audit'` |
+| role           | Enum              | role of the sender<br />`'patient', 'doctor', 'nurse', 'admin', 'system', 'clinicAdmin', 'audit'` |
 
 #### Message Creation
 
@@ -465,12 +493,12 @@ Response:
 
 | **Field**         | **Value**                                                    |
 | ----------------- | ------------------------------------------------------------ |
-| type              | 'adhoc' \| 'recurring' <br />if type adhoc, then only sent out through GUI. |
+| type              | 'adhoc', 'recurring' <br />if type adhoc, then only sent out through GUI. |
 | nOccurrences      | (for type recurring) number of times item should be sent out |
 | timeOfDay.hours   | (for type recurring), when item should be sent out in patient timezone hours (0-23) |
 | timeOfDay.minutes | (for type recurring), when item should be sent out in patient timezone minutes (0-59) |
 | surveyStartDate   | (for type recurring), when item should be sent out in patient timezone (date)<br />format `YYYY-MM-DD` |
-| frequency         | (for type recurring)<br /><br />`{ type: 'weekly', everyN: number, days: Array<'Sun'|'Mon'|'Tue'|'Wed'|'Thu'|'Fri'|'Sat'>, }`<br />type weekly, send out every n weeks on specified days <br /><br />`{ type: 'daily', everyN: number }`<br />type weekly, send out every n days <br /><br />`{ type: 'monthly', everyN: number, day: number }`<br />type monthly, send out every n months on a specific day (1-31) of the month <br /> |
+| frequency         | (for type recurring)<br /><br />`{ type: 'weekly', everyN: number, days: Array<'Sun','Mon','Tue','Wed','Thu','Fri','Sat'>, }`<br />type weekly, send out every n weeks on specified days <br /><br />`{ type: 'daily', everyN: number }`<br />type weekly, send out every n days <br /><br />`{ type: 'monthly', everyN: number, day: number }`<br />type monthly, send out every n months on a specific day (1-31) of the month <br /> |
 
 #### Recurring Survey Data Model 
 
@@ -478,7 +506,7 @@ Response:
 | ------------------- | ------------------- | ------------------------------------------------------------ |
 | recurringSurveyId   | *string*            | UUID representing the recurring survey                       |
 | name                | *string*            | Name of the generic survey                                   |
-| type                | *enum*              | Type of generic survey<br />`'instrument' | 'attachment' | 'message' | 'checklist' | 'exercise' | 'video'` |
+| type                | *enum*              | Type of generic survey<br />`'instrument', 'attachment', 'message', 'checklist', 'exercise', 'video'` |
 | startDatePreference | *JSON*              | See **Start Date Preference**  data model                    |
 | patientSurveys      | *JSON*              | Array of every instance of the recurring survey sent out. See **PatientSurvey** data model |
 | campaign.id         | *string (optional)* | Id of campaign associated with recurring survey (if applicable) |
@@ -504,8 +532,8 @@ Body Parameters:
 | -------------------------------------- | ------------- | ------------------------------------------------------------ |
 | survey.duration                        | *number*      | number of hours item should be valid for                     |
 | survey.genericSurveyId                 | *string*      | GenericSurveyId to be sent out                               |
-| survey.messageData.creation            | *JSON*        | ```{ text: null | <MESSAGE>, email: null | { subject: <MESSAGE>, body: <MESSAGE> } } ```<br /><br />JSON blob specifying the message to send over to the patient over email / text (optionally can leave both values as null) on item creation |
-| survey.messageData.reminder            | *JSON*        | ```{ text: null | <MESSAGE>, email: null | { subject: <MESSAGE>, body: <MESSAGE> } } ```<br /><br />JSON blob specifying the message to send over to the patient over email / text (optionally can leave both values as null) for **reminders** |
+| survey.messageData.creation            | *JSON*        | ```{ text: null OR <MESSAGE>, email: null | { subject: <MESSAGE>, body: <MESSAGE> } } ```<br /><br />JSON blob specifying the message to send over to the patient over email / text (optionally can leave both values as null) on item creation |
+| survey.messageData.reminder            | *JSON*        | ```{ text: null OR <MESSAGE>, email: null | { subject: <MESSAGE>, body: <MESSAGE> } } ```<br /><br />JSON blob specifying the message to send over to the patient over email / text (optionally can leave both values as null) for **reminders** |
 | survey.notifications.daysBeforeDueDate | Array<number> | Array of the number of days before the due date to send reminder to patient. Ex: `[1]` would send reminder to patient one day before the due date |
 | survey.startDatePreference             | *JSON*        | See Start Date Preference  data model                        |
 
@@ -612,7 +640,7 @@ Body: Response:
 | Field          | Value                                                        |
 | :------------- | ------------------------------------------------------------ |
 | channel        | enum (`Mobile` or `In-App`), medium where item was completed |
-| user.type      | role of the  responder<br />`'patient' | 'doctor' | 'nurse' | 'admin' | 'system' | 'clinicAdmin' | 'audit'` |
+| user.type      | role of the  responder<br />`'patient', 'doctor', 'nurse', 'admin', 'system', 'clinicAdmin', 'audit'` |
 | user.firstName | first name of responder                                      |
 | user.lastName  | last name of responser                                       |
 | user.tvid      | UUID associated with responder (PatientTvId for patient - see patient model) |
@@ -741,7 +769,7 @@ Request Body Example
 | timeZone                | *enum (required)*      | Timezone of the patient (patient will receive automated messages based on their timezone) [https://gist.github.com/prithvin/97266af350cf1becfc1887253a0e5a1d](https://gist.github.com/prithvin/97266af350cf1becfc1887253a0e5a1d)  see this list for a complete list of timezones Ex: Africa/Bangui is a timezone with a UTC offset of GMT+01:00 |
 | email                   | *string (optional)*    | Email or phone number are required for patient creation      |
 | phoneNumber             | *string (optional)*    | Email or phone number are required for patient creation. We accept the e.164 phone number format ([https://www.twilio.com/docs/glossary/what-e164](https://www.twilio.com/docs/glossary/what-e164)) |
-| role                    | *enum*                 | *enum values*: `clinicAdmin` | `provider`                    |
+| role                    | *enum*                 | *enum values*: `clinicAdmin`, `provider`                    |
 | notificationPreferences | Array<enum> (required) | `email` `text` .<br /><br />Options for how the patient would like to receive notifications: `email` `text`. Patient must have email provided if email notifications set. Patient must have phone provided if text notifications set. |
 | providerTvId            | *string (required*)    | UUID for provider                                            |
 
