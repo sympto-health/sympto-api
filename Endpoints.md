@@ -1,12 +1,12 @@
 
-  
+
 
 # Available Endpoints 
 
 This guide provides an overview on how to use various endpoints within the Sympto ecosystem.
 *For Single Sign On Integration, see [here](https://github.com/sympto-health/sympto-api/blob/master/Webhook.md). We also support most **SAML** providers*
 
-#### Security Notes
+#### Security Notes 
 
  - Your client id and client secret are **secure and sensitive** credentials. These should not be stored anywhere in **plain text**
  - Note that e-PHI is accessible using your client id and secret
@@ -168,7 +168,38 @@ Example
 }
 ```
 
-> Note: Patients can only be disabled / deleted via the UI 
+
+
+#### **Patient Deletion**
+
+Patient soft deleted from the digital clinic.  
+
+Up to 4 other new patients with the same phone number can be created after an existing patient is deleted. **After 4 patients with the same phone number are created**, the phone number will no longer be available for use.
+
+Beyond 4 patients, the phone numbers for existing patients must be replaced before a new patient with the same phone number can be created. 
+
+##### **Side effects of patient account creation**
+
+> Patient removed from all groups, and will not receive any further messages until re-enabled from the Sympto UI. Only the clinic administrator will have access to this patient.
+
+URL: `/providers/patient/:patientTvId` 
+
+> URL Parameters :patientTvId -> (see patient data model)
+
+Type: `DELETE`
+
+Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/)
+
+Body Parameters: N/A
+
+Body: Response:
+
+```javascript
+{
+	Status: 'OK',
+	Response: true
+}
+```
 
 
 
@@ -279,7 +310,7 @@ Body:
 | -------------- | ----------------------------------- | ------------------------------------------ |
 | name           | `string`                            | Attribute **name** (not UUID)              |
 | attributeValue | AttributeValue data type (see below) | Based on the type of the patient attribute |
-	
+
 Attribute Value Data Type:
 | Variable       | Type                                | **Value**                                  |
 | -------------- | ----------------------------------- | ------------------------------------------ |
@@ -305,7 +336,7 @@ Example Request:
 		value: 23,
 	}
 }
-```	
+```
 
 Response:
 
