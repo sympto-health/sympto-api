@@ -182,7 +182,7 @@ Beyond 4 patients, the phone numbers for existing patients must be replaced befo
 
 > Patient removed from all groups, and will not receive any further messages until re-enabled from the Sympto UI. Only the clinic administrator will have access to this patient.
 
-URL: `/providers/patient/:patientTvId` 
+URL: `/providers/patients/:patientTvId` 
 
 > URL Parameters :patientTvId -> (see patient data model)
 
