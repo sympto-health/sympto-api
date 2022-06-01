@@ -844,7 +844,7 @@ Response:
 
 #### Provider Management
 
-URL: `/providers`
+URL: `/clinicAdmin/careTeam`
 
 Type: `GET`
 
@@ -895,7 +895,7 @@ Updates provider data fields
 
 > Provider data model is updated for given `providerTvId`
 
-URL: `/providers/:providerTvId`
+URL: `/providers/patients/:patientTvId/update`
 
 Type: `POST`
 
