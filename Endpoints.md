@@ -1,6 +1,4 @@
 
-
-
 # Available Endpoints 
 
 This guide provides an overview on how to use various endpoints within the Sympto ecosystem.
@@ -36,14 +34,11 @@ Response (JSON)
 
 ```javascript
 {
-	Status: 'OK',
-	Response: {
-		authCode: 'BEARER_TOKEN_AUTH_CODE',
-	}
+  Status: 'OK',
+  Response: {
+    authCode: 'BEARER_TOKEN_AUTH_CODE',
+  }
 }
-```
-
-```javascript
 const { data: { Response: authCode } } = await axios.post(
   'https://symptosandboxapi.com/authorization', 
   {
@@ -111,8 +106,8 @@ Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: patientTvId (see patient data model)
+  Status: 'OK',
+  Response: patientTvId (see patient data model)
 }
 ```
 
@@ -138,8 +133,8 @@ Body: Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: Array<Patient Data Model + Group Data Model> (see example response)
+  Status: 'OK',
+  Response: Array<Patient Data Model + Group Data Model> (see example response)
 }
 ```
 
@@ -182,7 +177,7 @@ Beyond 4 patients, the phone numbers for existing patients must be replaced befo
 
 > Patient removed from all groups, and will not receive any further messages until re-enabled from the Sympto UI. Only the clinic administrator will have access to this patient.
 
-URL: `/providers/patient/:patientTvId` 
+URL: `/providers/patients/:patientTvId` 
 
 > URL Parameters :patientTvId -> (see patient data model)
 
@@ -196,8 +191,8 @@ Body: Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: true
+  Status: 'OK',
+  Response: true
 }
 ```
 
@@ -219,8 +214,8 @@ Body Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: true
+  Status: 'OK',
+  Response: true
 }
 ```
 
@@ -232,16 +227,16 @@ Request Body Example
 
 ```javascript
 {
-	firstName: 'John',
-	lastName: 'Doe',
-	timeZone: 'America/Los_Angeles',
-	email: null,
-	phoneNumber: '+16507935243',
-	sex: 'M',
-	dob: '12-24-1934',
-	language: 'English',
-	mrn: null,
-	notificationType: ['email']
+  firstName: 'John',
+  lastName: 'Doe',
+  timeZone: 'America/Los_Angeles',
+  email: null,
+  phoneNumber: '+16507935243',
+  sex: 'M',
+  dob: '12-24-1934',
+  language: 'English',
+  mrn: null,
+  notificationType: ['email']
 }
 ```
 
@@ -289,8 +284,8 @@ Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: Array<PatientAttributeDataModel> (see message data model)
+  Status: 'OK',
+  Response: Array<PatientAttributeDataModel> (see message data model)
 }
 ```
 
@@ -320,21 +315,18 @@ Attribute Value Data Type:
 Example Request: 
 ```javascript
 {
-	name: 'dob',
-	attributeValue: {
-		type: 'string',
-		value: '12-24-1997',
-	}
+  name: 'dob',
+  attributeValue: {
+    type: 'string',
+    value: '12-24-1997',
+  }
 }
-```
-
-```javascript
 {
-	name: 'age',
-	attributeValue: {
-		type: 'number',
-		value: 23,
-	}
+  name: 'age',
+  attributeValue: {
+    type: 'number',
+    value: 23,
+  }
 }
 ```
 
@@ -342,8 +334,8 @@ Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: true
+  Status: 'OK',
+  Response: true
 }
 ```
 
@@ -407,8 +399,8 @@ Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: true,
+  Status: 'OK',
+  Response: true,
 }
 ```
 
@@ -432,8 +424,8 @@ Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: {
+  Status: 'OK',
+  Response: {
     messages: Array<MessageDataModel>, (see message data model)
     hasNewMessages: boolean, (true when there are additional new messages still unread)
 }
@@ -472,8 +464,8 @@ Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: Array<Campaign Data Model>
+  Status: 'OK',
+  Response: Array<Campaign Data Model>
 }
 ```
 
@@ -497,8 +489,8 @@ Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: { patientCampaignId: string }
+  Status: 'OK',
+  Response: { patientCampaignId: string }
 }
 ```
 
@@ -572,8 +564,8 @@ Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: RecurringSurveyId (see Recurring Survey data model)
+  Status: 'OK',
+  Response: RecurringSurveyId (see Recurring Survey data model)
 }
 ```
 
@@ -597,8 +589,8 @@ Body: Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: Array<Recurring Survey Data Model>
+  Status: 'OK',
+  Response: Array<Recurring Survey Data Model>
 }
 ```
 
@@ -630,8 +622,8 @@ Body: Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: true
+  Status: 'OK',
+  Response: true
 }
 ```
 
@@ -697,8 +689,8 @@ Body Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: Array<ResponseId> // see Response model (one response id for each start date)
+  Status: 'OK',
+  Response: Array<ResponseId> // see Response model (one response id for each start date)
 }
 ```
 
@@ -724,8 +716,8 @@ Body Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: true
+  Status: 'OK',
+  Response: true
 }
 ```
 
@@ -747,8 +739,8 @@ Body Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: true
+  Status: 'OK',
+  Response: true
 }
 ```
 
@@ -760,8 +752,8 @@ Request Body Example
 
 ```javascript
 {
-	patientSurveyId: 'd7f92712-f34a-4123-a623-f0fc55544204',
-	instrumentType: 'instrument',
+  patientSurveyId: 'd7f92712-f34a-4123-a623-f0fc55544204',
+  instrumentType: 'instrument',
   completionMedium: [{
     channel: 'Mobile',
     user: {
@@ -800,11 +792,12 @@ Request Body Example
 | timeZone                | *enum (required)*      | Timezone of the patient (patient will receive automated messages based on their timezone) [https://gist.github.com/prithvin/97266af350cf1becfc1887253a0e5a1d](https://gist.github.com/prithvin/97266af350cf1becfc1887253a0e5a1d)  see this list for a complete list of timezones Ex: Africa/Bangui is a timezone with a UTC offset of GMT+01:00 |
 | email                   | *string (optional)*    | Email or phone number are required for patient creation      |
 | phoneNumber             | *string (optional)*    | Email or phone number are required for patient creation. We accept the e.164 phone number format ([https://www.twilio.com/docs/glossary/what-e164](https://www.twilio.com/docs/glossary/what-e164)) |
-| role                    | *enum*                 | *enum values*: `clinicAdmin`, `provider`                    |
+| role                    | *enum*                 | *enum values*: `clinicAdmin`, `provider`                     |
 | notificationPreferences | Array<enum> (required) | `email` `text` .<br /><br />Options for how the patient would like to receive notifications: `email` `text`. Patient must have email provided if email notifications set. Patient must have phone provided if text notifications set. |
+| notificationType        | Array<enum> (required) | `patient-message`, `provider-message`, `daily-summary-message`, `alert` <br /> Types of notifications that provider would like to be notified for. **We recommend setting alert and patient-message** as defaults |
 | providerTvId            | *string (required*)    | UUID for provider                                            |
 
-#### **Provider Creation**
+#### **Provider Creation**  
 
 Creates a provider + creates a group associated with the provider. See [groups](https://github.com/sympto-health/sympto-api/blob/master/Endpoints.md#Groups)
 
@@ -830,21 +823,22 @@ Body:
 | email                     | *string (optional)*                                          |
 | phoneNumber               | *string (optional)*                                          |
 | role                      | *enum (optional)*                                            |
-| notificationPreferences   | *Array (required)*                                           |
+| notificationPreferences   | *Array (required)* - see Provider data model                 |
+| notificationType          | *Array (required)* - see Provider data model                 |
 | options.disableIntroEmail | *boolean (optional)*<br />if set to true, does not send out introductory password reset / welcome message - this can be later sent out manually through the UI |
 
 Response:
 
 ```
 {
-	Status: 'OK',
-	Response: providerTvId (see provider data model)
+  Status: 'OK',
+  Response: providerTvId (see provider data model)
 }
 ```
 
 #### Provider Management
 
-URL: `/providers`
+URL: `/clinicAdmin/careTeam`
 
 Type: `GET`
 
@@ -858,8 +852,8 @@ Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: Array<Provider Data Model + Group Data Model> (see example response)
+  Status: 'OK',
+  Response: Array<Provider Data Model + Group Data Model> (see example response)
 }
 ```
 
@@ -867,8 +861,8 @@ Example Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: {
+  Status: 'OK',
+  Response: {
     firstName: 'John',
     lastName: 'Doe',
     timeZone: 'America/Los_Angeles',
@@ -895,7 +889,7 @@ Updates provider data fields
 
 > Provider data model is updated for given `providerTvId`
 
-URL: `/providers/:providerTvId`
+URL: `/clinicAdmin/providers/:providerTvId/update`
 
 Type: `POST`
 
@@ -903,22 +897,23 @@ Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/
 
 Body:
 
-| Field                   | Value (See Data Model) |
-| ----------------------- | ---------------------- |
-| firstName               | *string (required)*    |
-| lastName                | *string (required)*    |
-| timeZone                | *string (required)*    |
-| email                   | *string (optional)*    |
-| phoneNumber             | *string (optional)*    |
-| role                    | *enum (optional)*      |
-| notificationPreferences | *Array (required)*     |
+| Field                   | Value (See Data Model)                                       |
+| ----------------------- | ------------------------------------------------------------ |
+| firstName               | *string (required)*                                          |
+| lastName                | *string (required)*                                          |
+| timeZone                | *string (required)*                                          |
+| email                   | *string (optional)*                                          |
+| phoneNumber             | *string (optional)* - either email or phone number is required |
+| role                    | *enum (optional)*                                            |
+| notificationPreferences | *Array (required)* - see Provider data model                 |
+| notificationType        | *Array (required)* - see Provider data model                 |
 
 Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: true
+  Status: 'OK',
+  Response: true
 }
 ```
 
@@ -960,8 +955,8 @@ Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: groupId (see group data model)
+  Status: 'OK',
+  Response: groupId (see group data model)
 }
 ```
 
@@ -991,8 +986,8 @@ Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: true
+  Status: 'OK',
+  Response: true
 }
 ```
 
@@ -1018,8 +1013,8 @@ Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: true
+  Status: 'OK',
+  Response: true
 }
 ```
 
@@ -1048,8 +1043,8 @@ Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: true
+  Status: 'OK',
+  Response: true
 }
 ```
 
@@ -1078,8 +1073,8 @@ Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: 'User removed from group!'
+  Status: 'OK',
+  Response: 'User removed from group!'
 }
 ```
 
@@ -1108,8 +1103,8 @@ Response:
 
 ```javascript
 {
-	Status: 'OK',
-	Response: 'User removed from group!'
+  Status: 'OK',
+  Response: 'User removed from group!'
 }
 ```
 
@@ -1152,4 +1147,3 @@ How to validate signature?
 3. Compare the signature (or signatures) in the header to the expected signature. For an equality match, compute the difference between the current timestamp and the received timestamp, then decide if the difference is within your tolerance.
 
 #### Email prithvi@symptohealth.com with any further questions.
-
