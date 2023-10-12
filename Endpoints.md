@@ -62,7 +62,7 @@ const { data: { Response: authCode } } = await axios.post(
 | email            | *string (optional)*    | Email or phone number are required for patient creation      |
 | phoneNumber      | *string (optional)*    | Email or phone number are required for patient creation. We accept the e.164 phone number format ([https://www.twilio.com/docs/glossary/what-e164](https://www.twilio.com/docs/glossary/what-e164)) |
 | sex              | *enum (optional)*      | *enum values*: `'M' 'F' 'X'`                                 |
-| dob              | *string (optional)*    | format `YYYY-MM-DD`                                          |
+| dob              | *string (optional)*    | format `MM/DD/YYYY`                                          |
 | language         | *enum (optional)*      | `'English', 'Spanish', 'French'` -> patients receive automated Whatsapp consent messages in specified language / see patient portal in specified language |
 | mrn              | *string (optional)*    | Medical record number                                        |
 | notificationType | Array<enum> (required) | `email` `text` `whatsapp`.<br /><br />Options for how the patient would like to receive notifications: `email` `text` `whatsapp`. Patient must have email provided if email notifications set. Patient must have phone provided if text or WhatsApp notifications set. |
