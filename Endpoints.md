@@ -1,4 +1,3 @@
-
 # Available Endpoints 
 
 This guide provides an overview on how to use various endpoints within the Sympto ecosystem.
@@ -165,6 +164,62 @@ Example
 
 
 
+#### **Patient Update**
+
+URL: `/providers/patients/:patientTvId/update`
+
+> URL Parameters :patientTvId -> (see patient data model)
+
+Type: `POST`
+
+Headers: Use `authCode` from Step 1 as a [bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/)
+
+Body:
+
+| Field             | Value (See Data Model)                                       |
+| ----------------- | ------------------------------------------------------------ |
+| firstName         | *string (required)*                                          |
+| lastName          | *string (required)*                                          |
+| timeZone          | *string (required)*                                          |
+| email             | *string (optional) - either email or phone number required*  |
+| phoneNumber       | *string (optional) - either email or phone number required*  |
+| sex               | *enum (optional)*                                            |
+| dob               | *string (optional)*                                          |
+| language          | *enum (optional)*                                            |
+| mrn               | *string (optional)*                                          |
+| notificationType  | *Array<enum> (required)*                                     |
+| patientAttributes | Array(PatientAttributeModel) (optional) - list  of patient attributes to enroll patient in |
+
+> **Important Note**: If a patient's phone number is updated to a number that is already in use by another patient, the **system phone number** (the number from which the patient receives messages) may change. This is to maintain a one-to-one mapping between each patient's phone number and the system's outgoing message number.
+>
+> **Example Scenario**:
+>
+> 1. **Initial Situation**:
+>    - Patient A has the phone number +123456789.
+>    - Patient B updates their phone number to +123456789, which is now the same as Patient A's number.
+>
+> 2. **Change Due to Update**:
+>    - To ensure clear and private communication, the system will assign different outgoing numbers for Patient A and Patient B.
+>    - For instance, Patient A might continue to receive messages from the system number +9988776655.
+>    - Patient B, after the update, might start receiving messages from a different system number, such as +1122334455.
+>
+> 3. **Outcome**:
+>    - Both Patient A and Patient B have the same personal phone number (+123456789).
+>    - However, they receive messages from the system in separate text threads from different numbers (Patient A from +9988776655, and Patient B from +1122334455).
+>
+> This approach ensures that each patient receives messages in a distinct and secure conversation thread, even if their personal phone numbers are identical.
+
+Body: Response:
+
+```javascript
+{
+  Status: 'OK',
+  Response: true
+}
+```
+
+
+
 #### **Patient Deletion**
 
 Patient soft deleted from the digital clinic.  
@@ -301,18 +356,20 @@ Type: `POST`
 
 Body: 
 
-| Variable       | Type                                | **Value**                                  |
-| -------------- | ----------------------------------- | ------------------------------------------ |
-| name           | `string`                            | Attribute **name** (not UUID)              |
+| Variable       | Type                                 | **Value**                                  |
+| -------------- | ------------------------------------ | ------------------------------------------ |
+| name           | `string`                             | Attribute **name** (not UUID)              |
 | attributeValue | AttributeValue data type (see below) | Based on the type of the patient attribute |
 
 Attribute Value Data Type:
-| Variable       | Type                                | **Value**                                  |
-| -------------- | ----------------------------------- | ------------------------------------------ |
-| type           | *`enum`*              | type of patient attribute<br />`'string', 'boolean', 'number'` |
-| value | `null`  `string` `boolean` `number` | Based on the type of the patient attribute |
+
+| Variable | Type                                | **Value**                                                    |
+| -------- | ----------------------------------- | ------------------------------------------------------------ |
+| type     | *`enum`*                            | type of patient attribute<br />`'string', 'boolean', 'number'` |
+| value    | `null`  `string` `boolean` `number` | Based on the type of the patient attribute                   |
 
 Example Request: 
+
 ```javascript
 {
   name: 'dob',
@@ -345,11 +402,11 @@ Response:
 
 #### How to use Patient Attributes
 
-1) Log in as a clinic admin
+1. Log in as a clinic admin
 
-2) <img src="./settings.png" alt="image-20220117235133618" height="200" />
+2. <img src="./settings.png" alt="image-20220117235133618" height="200" />
 
-3) Create a new patient attribute
+3. Create a new patient attribute
 
    <img src="./attribute.png" alt="image-20220117235241410" height="200" />
 
@@ -1146,4 +1203,5 @@ How to validate signature?
 
 3. Compare the signature (or signatures) in the header to the expected signature. For an equality match, compute the difference between the current timestamp and the received timestamp, then decide if the difference is within your tolerance.
 
-#### Email prithvi@symptohealth.com with any further questions.
+
+#### Email [prithvi@relyhealth.care](prithvi@relyhealth.care)  with any further questions.
