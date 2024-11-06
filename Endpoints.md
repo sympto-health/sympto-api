@@ -64,7 +64,7 @@ const { data: { Response: authCode } } = await axios.post(
 | dob              | *string (optional)*    | format `MM/DD/YYYY`                                          |
 | language         | *enum (optional)*      | `'English', 'Spanish', 'French'` -> patients receive automated Whatsapp consent messages in specified language / see patient portal in specified language |
 | mrn              | *string (optional)*    | Medical record number                                        |
-| notificationType | Array<enum> (required) | `email` `text` `whatsapp`.<br /><br />Options for how the patient would like to receive notifications: `email` `text` `whatsapp`. Patient must have email provided if email notifications set. Patient must have phone provided if text or WhatsApp notifications set. |
+| notificationType | Array<enum> (required) | `email` `text` `whatsapp` `email-instrument` <br /><br />Options for how the patient would like to receive notifications: `email` `text` `whatsapp`. Patient must have email provided if email notifications set. Patient must have phone provided if text or WhatsApp notifications set. Email allows patient to receive messages via email. Email instrument allows patient to receive questionnaires via email |
 | patientTvId      | *string (required*)    | UUID for patient                                             |
 
 #### **Patient Creation**
