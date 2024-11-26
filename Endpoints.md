@@ -1077,7 +1077,11 @@ Response:
 
 
 
-#### Adding User to Group
+### Managing Group Memberships
+
+The `/clinicAdmin/groups/manage` endpoint provides three operations for managing group memberships: adding users to groups, removing users from groups, and setting a user's complete group membership list.
+
+#### Add User to Group
 
 URL: `/clinicAdmin/groups/manage` 
 
@@ -1092,12 +1096,19 @@ Body:
 | userId  | *string (required)*<br />UUID representing either patient (see patientTvId in Patient Data Model) or provider (see providerTvId in Provider Data Model) |
 | groupId | *string (required)*<br />UUID representing group (see groupId in Group Data Model) |
 
-##### **Side effects of e**diting group
+##### Side effects of adding user to group
 
-> User is added to the group. Nothing happens if user is already in the group
+> User is added to the specified group. If the user is already in the group, no changes are made.
+
+Example Request:
+```javascript
+{
+  "userId": "550e8400-e29b-41d4-a716-446655440000",
+  "groupId": "7b44b47d-af99-4891-b631-918528940123"
+}
+```
 
 Response:
-
 ```javascript
 {
   Status: 'OK',
@@ -1105,9 +1116,7 @@ Response:
 }
 ```
 
-
-
-#### Removing User to Group
+#### Remove User from Group
 
 URL: `/clinicAdmin/groups/manage` 
 
@@ -1122,12 +1131,19 @@ Body:
 | userId  | *string (required)*<br />UUID representing either patient (see patientTvId in Patient Data Model) or provider (see providerTvId in Provider Data Model) |
 | groupId | *string (required)*<br />UUID representing group (see groupId in Group Data Model) |
 
-##### **Side effects of e**diting group
+##### Side effects of removing user from group
 
-> User is removed to the group. Nothing happens if user is not in the group already
+> User is removed from the specified group. If the user is not in the group, no changes are made.
+
+Example Request:
+```javascript
+{
+  "userId": "550e8400-e29b-41d4-a716-446655440000",
+  "groupId": "7b44b47d-af99-4891-b631-918528940123"
+}
+```
 
 Response:
-
 ```javascript
 {
   Status: 'OK',
@@ -1135,9 +1151,7 @@ Response:
 }
 ```
 
-
-
-#### Set Groups for User
+#### Set All Groups for User
 
 URL: `/clinicAdmin/groups/manage` 
 
@@ -1150,21 +1164,33 @@ Body:
 | Field    | Value (See Data Model)                                       |
 | -------- | ------------------------------------------------------------ |
 | userId   | *string (required)*<br />UUID representing either patient (see patientTvId in Patient Data Model) or provider (see providerTvId in Provider Data Model) |
-| groupIds | *Array<string> (required)*<br />UUID representing group (see groupId in Group Data Model) |
+| groupIds | *Array<string> (required)*<br />Array of UUIDs representing groups (see groupId in Group Data Model) |
 
-##### **Side effects of e**diting group
+##### Side effects of setting user groups
 
-> User is enrolled in all the groups passed in the `groupIds` parameters. User is **removed ** from any group not passed in `groupIds`. After this endpoint finishes executing, the user will onlty be enrolled in groups associated with the `groupIds` array paramter.
+> This endpoint replaces all of the user's group memberships with the provided list. The user will be:
+> - Added to any groups in the groupIds array that they weren't already in
+> - Removed from any current groups that aren't in the groupIds array
+> - After execution, the user will only be a member of the groups specified in groupIds
 
-Response:
-
+Example Request:
 ```javascript
 {
-  Status: 'OK',
-  Response: 'User removed from group!'
+  "userId": "550e8400-e29b-41d4-a716-446655440000",
+  "groupIds": [
+    "7b44b47d-af99-4891-b631-918528940123",
+    "9c55c58e-ba00-5902-c742-029639051234"
+  ]
 }
 ```
 
+Response:
+```javascript
+{
+  Status: 'OK',
+  Response: true
+}
+```
 
 
 ------
