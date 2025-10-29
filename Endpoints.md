@@ -852,6 +852,7 @@ Request Body Example
 | role                    | *enum*                 | *enum values*: `clinicAdmin`, `provider`                     |
 | notificationPreferences | Array<enum> (required) | `email` `text` .<br /><br />Options for how the patient would like to receive notifications: `email` `text`. Patient must have email provided if email notifications set. Patient must have phone provided if text notifications set. |
 | notificationType        | Array<enum> (required) | `patient-message`, `provider-message`, `daily-summary-message`, `alert` <br /> Types of notifications that provider would like to be notified for. **We recommend setting alert and patient-message** as defaults |
+| metadata                | *object (optional)*    | Custom key-value pairs for storing additional provider information |
 | providerTvId            | *string (required*)    | UUID for provider                                            |
 
 #### **Provider Creation**  
@@ -882,6 +883,7 @@ Body:
 | role                      | *enum (optional)*                                            |
 | notificationPreferences   | *Array (required)* - see Provider data model                 |
 | notificationType          | *Array (required)* - see Provider data model                 |
+| metadata                  | *Object (optional)*<br />Custom key-value pairs for storing additional provider information (e.g., `{ department: "Cardiology", specialization: "Interventional" }`) |
 | options.disableIntroEmail | *boolean (optional)*<br />if set to true, does not send out introductory password reset / welcome message - this can be later sent out manually through the UI |
 
 Response:
@@ -964,6 +966,7 @@ Body:
 | role                    | *enum (optional)*                                            |
 | notificationPreferences | *Array (required)* - see Provider data model                 |
 | notificationType        | *Array (required)* - see Provider data model                 |
+| metadata                | *Object (optional)*<br />Custom key-value pairs for storing additional provider information (e.g., `{ department: "Neurology", shift: "Night", location: "Building A" }`) |
 
 Response:
 
